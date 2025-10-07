@@ -1,0 +1,111 @@
+/* Center the form on screen */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #240046, #5a189a, #9d4edd);
+  font-family: Arial, sans-serif;
+}
+
+/* Purple themed form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 2em;
+  background: #3c096c;
+  border-radius: 20px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  width: 320px;
+  transition: 0.3s;
+}
+
+.form:hover {
+  transform: scale(1.03);
+}
+
+/* Gradient heading */
+#heading {
+  text-align: center;
+  margin-bottom: 1.5em;
+  font-size: 1.6em;
+  font-weight: bold;
+  background: linear-gradient(90deg, #a855f7, #d946ef);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Input fields */
+.field {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  border-radius: 8px;
+  padding: 0.6em;
+  background-color: #4c1d95;
+}
+
+.input-icon {
+  height: 1.3em;
+  width: 1.3em;
+  fill: #d8b4fe;
+}
+
+.input-field {
+  background: none;
+  border: none;
+  outline: none;
+  width: 100%;
+  color: #f3e9ff;
+  font-size: 1em;
+}
+
+/* Buttons row */
+.form .btn {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1em;
+}
+
+/* Buttons */
+.button1, .button2, .button3 {
+  border: none;
+  outline: none;
+  padding: 0.6em 1.2em;
+  border-radius: 8px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.button1 {
+  background: #7b2cbf;
+  color: white;
+}
+
+.button1:hover {
+  background: #9d4edd;
+}
+
+.button2 {
+  background: #5a189a;
+  color: white;
+}
+
+.button2:hover {
+  background: #9d4edd;
+}
+
+.button3 {
+  margin-top: 1em;
+  background: #3c096c;
+  color: #f3e9ff;
+  width: 100%;
+}
+
+.button3:hover {
+  background: #ff4d6d;
+}

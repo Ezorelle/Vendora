@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendor Profile</title>
+  <style>
+    /* ===== Global Styles ===== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: #faf9ff;
+      color: #333;
+      line-height: 1.6;
+    }
+    h1, h2 {
+      color: #4a1fb8;
+    }
+    a {
+      color: #4a1fb8;
+      text-decoration: none;
+    }
+    section, header, footer {
+      background: #fff;
+      padding: 20px;
+      margin: 15px auto;
+      max-width: 1100px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    /* ===== Header ===== */
+    header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand img {
+      width: 65px;
+      height: 65px;
+      border-radius: 8px;
+      background: #e0d7f7;
+    }
+    .brand h1 {
+      font-size: 1.8rem;
+    }
+    .actions button {
+      background: #4a1fb8;
+      color: #fff;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      margin-left: 8px;
+      transition: 0.2s;
+    }
+    .actions button:hover {
+      background: #673ab7;
+    }
+
+    /* ===== Vendor Info ===== */
+    .vendor-info {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .vendor-about, .vendor-contact {
+      flex: 1;
+      min-width: 280px;
+    }
+
+    /* ===== Products ===== */
+    .products {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 15px;
+      margin-top: 15px;
+    }
+    .product {
+      background: #f3f0ff;
+      border: 2px solid #e0d7f7;
+      border-radius: 10px;
+      padding: 15px;
+      text-align: center;
+      transition: 0.3s;
+    }
+    .product:hover {
+      background: #e9e2fc;
+      transform: translateY(-3px);
+    }
+    .product img {
+      max-width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    /* ===== Reviews ===== */
+    .review {
+      border-bottom: 1px solid #eee;
+      padding: 10px 0;
+    }
+    .stars {
+      color: #ffb400;
+    }
+
+    /* ===== FAQ ===== */
+    details {
+      margin: 10px 0;
+      padding: 10px;
+      background: #f9f7ff;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    summary {
+      font-weight: bold;
+      color: #4a1fb8;
+    }
+
+    /* ===== Footer ===== */
+    footer {
+      text-align: center;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+    footer button {
+      background: #4a1fb8;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    footer button:hover {
+      background: #673ab7;
+    }
+
+    /* ===== Responsive ===== */
+    @media(max-width: 600px){
+      .brand h1 {
+        font-size: 1.4rem;
+      }
+      header, section, footer {
+        margin: 10px;
+        padding: 15px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="brand">
+      <img src="images/Logo.png" alt="Vendor Logo">
+      <h1>Niggasaurus</h1>
+    </div>
+    <div class="actions">
+      <button>Follow Store</button>
+      <button>Contact Seller</button>
+    </div>
+  </header>
+
+  <!-- ===== ABOUT & CONTACT ===== -->
+  <section class="vendor-info">
+    <div class="vendor-about">
+      <h2>About Us</h2>
+      <p>We are a trusted vendor with 10+ years in business, offering eco-friendly and high-quality products.</p>
+    </div>
+    <div class="vendor-contact">
+      <h2>Contact & Location</h2>
+      <p>Email: vendor@email.com</p>
+      <p>Phone: +123 456 7890</p>
+      <p>Location: Nairobi, Kenya</p>
+    </div>
+  </section>
+
+  <!-- ===== RATINGS ===== -->
+  <section>
+    <h2>Trust & Ratings</h2>
+    <p><span class="stars">⭐⭐⭐⭐☆</span> 4.5/5 (200 reviews)</p>
+    <p>✅ Verified Seller</p>
+    <p>Return Policy: 7-day money-back guarantee</p>
+  </section>
+
+
+
+  <!-- ===== REVIEWS ===== -->
+  <section>
+    <h2>Customer Reviews</h2>
+    <div class="review">
+      <p><strong>John D.</strong> <span class="stars">⭐⭐⭐⭐⭐</span></p>
+      <p>Great product, fast shipping!</p>
+    </div>
+    <div class="review">
+      <p><strong>Mary K.</strong> <span class="stars">⭐⭐⭐⭐</span></p>
+      <p>Good quality, but delivery was delayed.</p>
+    </div>
+  </section>
+
+  <!-- ===== FAQ ===== -->
+  <section>
+    <h2>FAQs</h2>
+    <details>
+      <summary>Do you ship internationally?</summary>
+      <p>Yes, we ship worldwide.</p>
+    </details>
+    <details>
+      <summary>What payment methods do you accept?</summary>
+      <p>We accept credit cards, PayPal, and mobile payments.</p>
+    </details>
+  </section>
+
+  <!-- ===== POLICIES ===== -->
+  <section>
+    <h2>Policies</h2>
+    <p>Return/Refund Policy, Terms of Service, Shipping Info.</p>
+  </section>
+
+  <!-- ===== PERFORMANCE ===== -->
+  <section>
+    <h2>Performance Metrics</h2>
+    <p>✅ 98% orders shipped on time</p>
+    <p>⏱ Replies within 24 hours</p>
+    <p>📦 5,200+ orders completed</p>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+    <button>Shop Now</button>
+    <button>Contact Seller</button>
+  </footer>
+
+</body>
+</html>

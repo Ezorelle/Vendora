@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendora Loading</title>
+  <style>
+    body, html {
+      margin: 0;
+      height: 100%;
+      overflow: hidden;
+      font-family: Arial, sans-serif;
+    }
+
+    .loading-screen {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, #6a0dad, #b066ff); /* Purple gradient */
+    }
+
+    /* Slideshow */
+    .slideshow {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slide.active {
+      opacity: 1;
+    }
+
+    /* Purple overlay */
+    .slideshow::after {
+      content: "";
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(106, 13, 173, 0.55); /* Semi-transparent purple */
+      z-index: 1;
+    }
+
+    /* Overlay content */
+    .overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      color: #fff;
+      z-index: 2;
+    }
+
+    .logo {
+      font-size: 3em;
+      margin: 0;
+      font-weight: bold;
+    }
+
+    .tagline {
+      font-size: 1.2em;
+      margin: 10px 0 20px;
+    }
+
+    .login-btn {
+      display: inline-block;
+      padding: 12px 25px;
+      background: #b066ff;
+      color: white;
+      border-radius: 25px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.3s ease;
+    }
+
+    .login-btn:hover {
+      background: #d89fff;
+    }
+
+    /* Loader */
+    .loader {
+      position: absolute;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 40px;
+      height: 40px;
+      border: 5px solid rgba(255,255,255,0.3);
+      border-top: 5px solid white;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      z-index: 2;
+    }
+
+    @keyframes spin {
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+ <div class="slideshow">
+  <div class="slide active">
+<img src="Images/slide1.png">
+    <p class="caption">Browse Vendors with Ease</p>
+  </div>
+  
+  <div class="slide">
+    <img src="Images/slide2.png">
+    <p class="caption">Fresh Products from Trusted Sellers</p>
+  </div>
+  
+  <div class="slide">
+    <img src="Images/slide3.png">
+    <p class="caption">Seamless Shopping Experience</p>
+  </div>
+</div>
+
+    <!-- Overlay content -->
+    <div class="overlay">
+      <h1 class="logo">Vendora</h1>
+      <p class="tagline">Discover Vendors Near You</p>
+      <a href="login.html" class="login-btn">Login</a>
+    </div>
+
+    <!-- Loader animation -->
+    <div class="loader"></div>
+  </div>
+
+  <script>
+    // Slideshow script
+    let slides = document.querySelectorAll('.slide');
+    let index = 0;
+
+    setInterval(() => {
+      slides[index].classList.remove('active');
+      index = (index + 1) % slides.length;
+      slides[index].classList.add('active');
+    }, 4000); // change every 4s
+  </script>
+</body>
+</html>
+
+<h2>Ezorelle</h2>

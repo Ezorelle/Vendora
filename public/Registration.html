@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Vendora - Register</title>
+  <link rel="stylesheet" href="registration.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Left side with logo -->
+    <div class="logo-section">
+      <img src="images/Logo.png" alt="Vendora Logo">
+    </div>
+
+    <!-- Right side with registration form -->
+    <div class="form-section">
+      <div class="register-card">
+        <h2>Create Account</h2>
+        
+        <!-- Registration form (POSTs to Express backend) -->
+        <form action="/register" method="POST">
+          <input type="text" name="fullname" placeholder="Full Name" required>
+<input type="text" name="Username" placeholder="Username" required>
+          <input type="email" name="email" placeholder="Email" required>
+          <input type="password" name="password" placeholder="Password" required>
+          <input type="password" name="confirm_password" placeholder="Confirm Password" required>
+          <button type="submit">Sign Up</button>
+        </form>
+
+        <p>Already have an account? 
+          <a href="login.html">Login here</a>
+        </p>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+

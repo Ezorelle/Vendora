@@ -1,0 +1,29 @@
+{
+  "name": "vendora",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ezorelle/Vendora.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Ezorelle/Vendora/issues"
+  },
+  "homepage": "https://github.com/Ezorelle/Vendora#readme",
+  "dependencies": {
+    "axios": "1.12.2",
+    "express": "^4.21.0",
+    "express-session": "^1.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5"
+  }
+}

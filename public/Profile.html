@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Profile - Vendora</title>
+  <link rel="stylesheet" href="Profile.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div class="profile-container">
+  <div class="profile-header">
+    <div class="profile-pic-container">
+      <img id="profile-pic" src="default-pfp.png" alt="Profile Picture">
+      <label for="file-input" class="edit-icon">
+        <i class="fas fa-camera"></i>
+      </label>
+      <input type="file" id="file-input" accept="image/*">
+    </div>
+    <div class="profile-info">
+      <h2>Welcome, Japhiter!</h2>
+      <p>ezorelle23@gmail.com</p>
+      <p><strong>Vendora Balance:</strong> KSh 0</p>
+    </div>
+    <i class="fas fa-user-circle fa-3x" style="color:#5a67d8;"></i>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="section">
+    <h3>Quick Links</h3>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-star"></i>
+        <span>Ratings & Reviews</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-ticket-alt"></i>
+        <span>Vouchers</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-heart"></i>
+        <span>Wishlist</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-store"></i>
+        <span>Follow Seller</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-history"></i>
+        <span>Recently Viewed</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-search"></i>
+        <span>Recently Searched</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- History -->
+  <div class="section">
+    <h3>History</h3>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-box"></i>
+        <span>Order History</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="section">
+    <h3>My Settings</h3>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-credit-card"></i>
+        <span>Payment Settings</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-map-marker-alt"></i>
+        <span>Address Book</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-cog"></i>
+        <span>Account Management</span>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-left">
+        <i class="fas fa-user-slash"></i>
+        <span>Close Account</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Logout -->
+  <a href="login.html" class="logout-btn">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </a>
+</div>
+</body>
+</html>

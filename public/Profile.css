@@ -1,0 +1,234 @@
+```css
+body {
+  font-family: Arial, sans-serif;
+  background: #6a0dad; /* Purple theme background */
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.profile-container {
+  max-width: 700px;
+  margin: 0 auto;
+  background: white;
+  min-height: 100vh;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.profile-pic-container {
+  position: absolute;
+  top: -70px;
+  left: 20px;
+  z-index: 10;
+  text-align: center;
+}
+
+.profile-pic-container img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid #5a67d8;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+}
+
+.profile-pic-container input[type="file"] {
+  display: none;
+}
+
+.edit-icon {
+  position: absolute;
+  bottom: -5px;
+  right: -5px;
+  background-color: #5a67d8;
+  color: white;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  border: none;
+}
+
+.edit-icon:hover {
+  background-color: #7f58d9;
+}
+
+.profile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #333;
+  color: white;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  position: relative;
+  padding-left: 90px; /* Space for profile pic */
+  text-align: left;
+}
+
+.profile-info {
+  flex: 1;
+}
+
+.profile-info h2 {
+  margin: 0 0 5px 0;
+  font-size: 1.2rem;
+}
+
+.profile-info p {
+  margin: 0 0 5px 0;
+  color: #e0e0e0;
+  font-size: 0.9rem;
+}
+
+.profile-header i {
+  color: #5a67d8;
+  font-size: 2.5rem;
+}
+
+.section {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.section h3 {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #444;
+  padding-left: 10px;
+  border-left: 3px solid #6a0dad;
+  display: inline-block;
+  text-align: left;
+}
+
+.card {
+  background: #fafafa;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  transition: 0.2s;
+  cursor: pointer;
+  max-width: 400px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+}
+
+.card:hover {
+  background: #f0f0f0;
+}
+
+.card i {
+  margin-right: 10px;
+  color: #5a67d8;
+  font-size: 1.2rem;
+  width: 20px;
+}
+
+.card .card-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.card .card-left span {
+  color: #333;
+  font-size: 1rem;
+}
+
+.logout-btn {
+  display: block;
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  background: #ff4d4d;
+  color: #fff;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.3s;
+  margin-top: 20px;
+}
+
+.logout-btn:hover {
+  background: #e63939;
+}
+
+.logout-btn i {
+  margin-right: 10px;
+}
+
+/* Specific icon colors */
+.fa-star { color: #ffd700 !important; }
+.fa-ticket-alt { color: #4a90e2 !important; }
+.fa-heart { color: #ff69b4 !important; }
+.fa-store { color: #5a67d8 !important; }
+.fa-history { color: #6a0dad !important; }
+.fa-search { color: #6a0dad !important; }
+.fa-box { color: #333 !important; }
+.fa-credit-card { color: #4a90e2 !important; }
+.fa-map-marker-alt { color: #5a67d8 !important; }
+.fa-cog { color: #666 !important; }
+.fa-user-slash { color: #ff4d4d !important; }
+.fa-sign-out-alt { color: #fff !important; }
+
+/* Bottom navigation - if present in HTML, style it */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #000;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  z-index: 1000;
+}
+
+.bottom-nav a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.bottom-nav i {
+  font-size: 20px;
+  margin-bottom: 2px;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 10px;
+  }
+  
+  .card {
+    max-width: none;
+  }
+  
+  .profile-pic-container {
+    left: 10px;
+  }
+  
+  .profile-header {
+    padding-left: 80px;
+  }
+}

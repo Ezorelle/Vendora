@@ -1,0 +1,36 @@
+<!-- Cart.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Cart</title>
+  <link rel="stylesheet" href="Cart.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a href="index.html" class="logo">Vendora</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="shop.html">Shop</a></li>
+      <li><a href="cart.html" class="active">
+        <i class="fas fa-shopping-cart"></i> Cart
+      </a></li>
+    </ul>
+  </nav>
+
+  <section class="cart-page">
+    <h1>Your Shopping Cart</h1>
+    <div id="cartItemsPage" class="cart-items-page"></div>
+    <div class="cart-summary">
+      <h3>Total: <span id="cartTotal">KES 0</span></h3>
+    </div>
+    <button id="checkoutBtnPage" class="checkout-btn">
+      Proceed to Checkout
+    </button>
+  </section>
+
+  <script src="Cart.js"></script>
+</body>
+</html>

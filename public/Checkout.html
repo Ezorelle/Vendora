@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+  <link rel="stylesheet" href="checkout.css">
+  <!-- Load PayPal SDK (Sandbox client ID for testing, replace with your own) -->
+  <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script>
+</head>
+<body>
+  <main class="checkout-container">
+    <h1>Secure Checkout</h1>
+
+    <form id="checkoutForm">
+      <!-- Customer Info -->
+      <fieldset class="section">
+        <legend>Customer Information</legend>
+        <input type="text" id="name" placeholder="Full Name" required>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="tel" id="phone" placeholder="Phone" required>
+      </fieldset>
+
+      <!-- Delivery -->
+      <fieldset class="section">
+        <legend>Delivery</legend>
+        <select id="city" required>
+          <option value="">-- Select City --</option>
+          <option value="nairobi">Nairobi</option>
+          <option value="kisumu">Kisumu</option>
+          <option value="mombasa">Mombasa</option>
+          <option value="kisii">Kisii</option>
+          <option value="eldoret">Eldoret</option>
+          <option value="garissa">Garissa</option>
+          <option value="kirinyaga">Kirinyaga</option>
+          <option value="nyamira">Nyamira</option>
+        </select>
+
+        <select id="deliveryOption" required>
+          <option value="">-- Select Delivery Option --</option>
+        </select>
+      </fieldset>
+
+      <!-- PayPal -->
+      <div class="payment-option">
+        <div class="payment-header">
+          <div class="left">
+            <img src="https://www.citypng.com/public/uploads/preview/transparent-hd-paypal-logo-701751694777788ilpzr3lary.png" alt="PayPal" />
+            <span>PayPal</span>
+          </div>
+          <button type="button" class="accordion-btn">
+            <span class="arrow">▼</span>
+          </button>
+        </div>
+        <div class="payment-details">
+          <div id="paypal-button-container"></div>
+        </div>
+      </div>
+
+      <!-- M-Pesa -->
+      <div class="payment-option">
+        <div class="payment-header">
+          <div class="left">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" alt="M-Pesa" />
+            <span>M-Pesa</span>
+          </div>
+          <button type="button" class="accordion-btn">
+            <span class="arrow">▼</span>
+          </button>
+        </div>
+        <div class="payment-details">
+          <input type="text" placeholder="M-Pesa Phone Number" />
+          <button type="button">Pay with M-Pesa</button>
+        </div>
+      </div>
+
+      <!-- Visa / Mastercard -->
+      <div class="payment-option">
+        <div class="payment-header">
+          <div class="left">
+            <span class="logo-group">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" />
+              <img src="https://upload.wikimedia.org/wikipedia/commons/0/04/Mastercard-logo.png" alt="Mastercard" />
+            </span>
+            <span>Visa / Global Pay</span>
+          </div>
+          <button type="button" class="accordion-btn">
+            <span class="arrow">▼</span>
+          </button>
+        </div>
+        <div class="payment-details">
+          <input type="text" placeholder="Card Number" />
+          <input type="text" placeholder="Expiry Date (MM/YY)" />
+          <input type="text" placeholder="CVV" />
+          <button type="button">Pay with Card</button>
+        </div>
+      </div>
+
+      <!-- Order Summary -->
+      <section class="section summary">
+        <p><span>Items Total:</span> <span>KES <span id="itemsTotal">0</span></span></p>
+        <p><span>Delivery Fee:</span> <span>KES <span id="deliveryFee">0</span></span></p>
+        <p class="total"><span>Grand Total:</span> <span>KES <span id="grandTotal">0</span></span></p>
+      </section>
+
+      <button type="submit" id="placeOrderBtn">Place Order</button>
+    </form>
+  </main>
+
+  <script>
+    // Get totals from localStorage
+    let itemsTotal = parseInt(localStorage.getItem("cartTotal")) || 0;
+    let deliveryFee = 0;
+
+    const itemsTotalEl = document.getElementById("itemsTotal");
+    const deliveryFeeEl = document.getElementById("deliveryFee");
+    const grandTotalEl = document.getElementById("grandTotal");
+
+    // Delivery options by city
+    const deliveryOptions = {
+      nairobi: [
+        { text: "Door Delivery (KES 350)", fee: 350 },
+        { text: "Pickup Station (KES 100)", fee: 100 }
+      ],
+      mombasa: [
+        { text: "Door Delivery (KES 500)", fee: 500 },
+        { text: "Pickup Station (KES 150)", fee: 150 }
+      ]
+    };
+
+    const deliverySelect = document.getElementById("deliveryOption");
+    document.getElementById("city").addEventListener("change", function() {
+      deliverySelect.innerHTML = '<option value="">-- Select Delivery Option --</option>';
+      const city = this.value;
+      const options = deliveryOptions[city] || [
+        { text: "Door Delivery (KES 300)", fee: 300 },
+        { text: "Pickup Station (KES 100)", fee: 100 }
+      ];
+      options.forEach(opt => {
+        const option = document.createElement("option");
+        option.value = opt.fee;
+        option.textContent = opt.text;
+        deliverySelect.appendChild(option);
+      });
+    });
+
+    deliverySelect.addEventListener("change", function() {
+      deliveryFee = parseInt(this.value) || 0;
+      updateTotals();
+    });
+
+    function updateTotals() {
+      const grand = itemsTotal + deliveryFee;
+      itemsTotalEl.textContent = itemsTotal;
+      deliveryFeeEl.textContent = deliveryFee;
+      grandTotalEl.textContent = grand;
+    }
+
+    // Init totals
+    updateTotals();
+
+    // Accordion logic
+    document.querySelectorAll(".accordion-btn").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const details = btn.closest(".payment-option").querySelector(".payment-details");
+        const isOpen = details.style.display === "block";
+        document.querySelectorAll(".payment-details").forEach(d => d.style.display = "none");
+        if (!isOpen) details.style.display = "block";
+      });
+    });
+  </script>
+</body>
+</html>
