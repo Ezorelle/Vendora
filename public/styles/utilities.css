@@ -1,0 +1,5 @@
+﻿/* utilities.css */
+.hidden { display:none !important; }
+.flex { display:flex; gap:8px; align-items:center; }
+.sr-only { position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
+.mt-1 { margin-top:4px; } .mt-2 { margin-top:8px; } .mb-1 { margin-bottom:4px; }

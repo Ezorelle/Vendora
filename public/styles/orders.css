@@ -1,0 +1,6 @@
+﻿/* orders.css */
+.orders-table { width:100%; border-collapse:collapse; }
+.orders-table th, .orders-table td { padding:8px; border-bottom:1px solid #eef2f6; text-align:left; }
+.status { padding:4px 8px; border-radius:999px; font-size:12px; }
+.status.paid { background:#ecfdf5; color:var(--success); }
+.status.pending { background:#fffbeb; color:#b45309; }

@@ -1,0 +1,4 @@
+﻿/* components.css - shared UI */
+.btn { display:inline-block; padding:8px 12px; border-radius:6px; background:var(--accent); color:#fff; }
+.badge { background:#eef2ff; color:var(--accent); padding:4px 8px; border-radius:999px; font-size:12px; }
+.card { background:var(--card); padding:12px; border-radius:8px; }

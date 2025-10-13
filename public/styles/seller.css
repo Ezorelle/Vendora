@@ -1,0 +1,5 @@
+﻿/* seller.css - page-specific */
+@import "base.css";
+@import "layout.css";
+.panel h2 { margin-bottom:10px; }
+.product-list .product-card { display:flex; justify-content:space-between; align-items:center; gap:8px; }

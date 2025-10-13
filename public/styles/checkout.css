@@ -1,0 +1,8 @@
+﻿/* checkout.css - page-specific */
+@import "base.css";
+.checkout-container { max-width:720px; margin:20px auto; background:var(--card); padding:16px; border-radius:10px; }
+.payment-option { border-top:1px solid #f1f5f9; padding:10px 0; }
+.payment-header { display:flex; justify-content:space-between; align-items:center; }
+.payment-details { display:none; padding-top:10px; }
+.summary { background:#f8fafc; padding:10px; border-radius:8px; margin-top:12px; }
+.total { font-weight:700; }

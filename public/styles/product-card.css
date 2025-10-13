@@ -1,0 +1,5 @@
+﻿/* product-card.css */
+.product-list { display:grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap:12px; }
+.product-card { background:var(--card); padding:10px; border-radius:8px; display:flex; flex-direction:column; gap:8px; border:1px solid #f1f5f9; }
+.product-card .title { font-weight:600; }
+.product-card .price { color:var(--accent); font-weight:700; }
