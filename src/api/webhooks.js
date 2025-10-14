@@ -50,8 +50,4 @@ router.post("/", (req, res) => {
   res.status(204).send();
 });
 
-module.exports = {
-  router,
-  verifySignature,
-  parseJSONSafe,
-};
+module.exports = router;
