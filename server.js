@@ -89,13 +89,13 @@ app.post("/login", (req, res) => {
 });
 
 // ----------------------
-// API Controllers
+// API Controllers (Corrected paths)
 // ----------------------
-const productsRouter = require("./src/api/controllers/products");
-const ordersRouter = require("./src/api/controllers/orders");
-const paymentsRouter = require("./src/api/controllers/payments");
-const invoicesRouter = require("./src/api/controllers/invoices");
-const webhooksRouter = require("./src/api/controllers/webhooks");
+const productsRouter = require("./src/api/products");
+const ordersRouter = require("./src/api/orders");
+const paymentsRouter = require("./src/api/payments");
+const invoicesRouter = require("./src/api/invoices");
+const webhooksRouter = require("./src/api/webhooks");
 
 app.use("/api/products", productsRouter);
 app.use("/api/orders", ordersRouter);
