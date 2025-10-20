@@ -90,13 +90,13 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function updateCartCount() {
-    const cart = getCart();
-    const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
-    const cartCount = document.getElementById("cartCount");
-    if (cartCount) {
-      cartCount.textContent = totalItems;
-    }
+  const cart = getCart();
+  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+  const cartCount = document.getElementById("cartCountNav"); // <-- fix here
+  if (cartCount) {
+    cartCount.textContent = totalItems;
   }
+}
 
   // Render floating / mini cart (in navbar dropdown)
   const cartItemsContainer = document.getElementById("cartItems");
@@ -310,4 +310,4 @@ function closeModal() {
   document.getElementById("itemModal").style.display = "none";
 }
 
-// Add more modal and cart logic here if not already present
+updateCartCount();
