@@ -176,4 +176,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-// ...existing code...
+// Save user role in localStorage
+if (user.role === "seller") {
+  localStorage.setItem("userRole", "seller");
+} else {
+  localStorage.setItem("userRole", "buyer");
+}

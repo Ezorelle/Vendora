@@ -1,222 +1,107 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Vendora - Discover Vendors</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendora – Discover Vendors</title>
+  <link rel="stylesheet" href="Style.css" >
+  <link rel="stylesheet"   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
   <!-- Navbar -->
-  <header class="navbar">
-    <div class="logo">
-      <a href="index.html">Vendora</a>
-    </div>
-    <div class="search-container">
-      <input type="text" placeholder="Search vendors, categories..." class="search-input">
-      <button class="search-btn"><i class="fas fa-search"></i></button>
-    </div>
-    <nav>
-      <ul class="nav-links">
-        <li><a href="vendors.html">Vendors</a></li>
-        <li><a href="categories.html">Categories</a></li>
-        <li class="nav-cart">
-          <a href="cart.html">
-            <i class="fas fa-shopping-cart"></i>
-            <span id="cartCountNav">0</span>
-          </a>
-        </li>
-        <li class="nav-user">
-          <a href="profile.html">
-            <i class="fas fa-user-circle"></i>
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </header>
+<header class="navbar">
+  <div class="logo"><a href="/">Vendora</a></div>
 
-  <!-- Hero Section -->
+  <div class="search-container">
+    <input type="text" placeholder="Search vendors, categories…" class="search-input" />
+    <button class="search-btn"><i class="fas fa-search"></i></button>
+  </div>
+
+  <nav>
+    <ul class="nav-links">
+      <li><a href="vendors.html">Vendors</a></li>
+      <li><a href="categories.html">Categories</a></li>
+      <li class="nav-cart">
+        <a href="Cart.html"><i class="fas fa-shopping-cart"></i><span id="cartCountNav">0</span></a>
+      </li>
+      <li class="nav-settings">
+        <a href="settings.html"><i class="fas fa-cog"></i></a>
+      </li>
+      <li class="nav-user">
+        <a href="profile.html"><i class="fas fa-user-circle"></i></a>
+      </li>
+    </ul>
+  </nav>
+</header>
+
+  <!-- Hero -->
   <section class="hero">
     <h1>Discover Local Vendors with Style</h1>
     <p>Explore unique products, services, and talents from your community.</p>
     <button class="cta-btn">Explore Vendors</button>
   </section>
-<!-- Ad Slot Placeholder (Dev Only) -->
-<div style="width:100%;height:90px;background:#ccc;text-align:center;line-height:90px;">
-  [Ad Slot Placeholder]
-</div>
 
-<!--  AdSense  (Uncomment when ready) -->
-<!--
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-XXXXXX"
-     data-ad-slot="1234567890"
-     data-ad-format="auto"></ins>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
--->
+  <!-- Ad Section (placeholder / live toggle) -->
+  <div id="ad-slot"></div>
+  <script>
+    if (location.hostname === "localhost" || location.hostname.includes("127.0.0.1")) {
+      document.getElementById("ad-slot").innerHTML =
+        '<div style="width:100%;height:90px;background:#ccc;text-align:center;line-height:90px;">[Ad Placeholder]</div>';
+    } else {
+      document.getElementById("ad-slot").innerHTML = `
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"><\/script>
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-XXXXXX"
+             data-ad-slot="1234567890"
+             data-ad-format="auto"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});<\/script>
+      `;
+    }
+  </script>
 
+  <!-- Slideshow (static) -->
   <section class="vendor-slideshow">
     <h2>Featured Vendors</h2>
     <div class="slideshow-container">
-      <button class="prev-btn" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></button>
-      <div class="slides">
-        <div class="slide">
-          <div class="vendor-card">
-            <img src="Images/Urban.jpg" alt="Urban Threads">
-            <h3>Urban Threads</h3>
-            <p>Handmade fashion with a street vibe.</p>
-            <a href="shop.html?vendor=urban-threads" class="shop-btn">Shop Now</a>
-          </div>
-        </div>
-        <div class="slide">
-          <div class="vendor-card">
-            <img src="Images/Glowbites.jpg" alt="Glow Bites">
-            <h3>Glow Bites</h3>
-            <p>Locally-made neon desserts & snacks.</p>
-            <a href="shop.html?vendor=glow-bites" class="shop-btn">Shop Now</a>
-          </div>
-        </div>
-        <div class="slide">
-          <div class="vendor-card">
-            <img src="Images/Pixelarts.jpg" alt="Pixel Arts">
-            <h3>Pixel Craft</h3>
-            <p>Custom digital art, prints, and gifts.</p>
-            <a href="shop.html?vendor=pixel-craft" class="shop-btn">Shop Now</a>
-          </div>
-        </div>
-      </div>
-      <button class="next-btn" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></button>
-      <div class="dots">
-        <span class="dot" onclick="currentSlide(1)"></span>
-        <span class="dot" onclick="currentSlide(2)"></span>
-        <span class="dot" onclick="currentSlide(3)"></span>
-      </div>
-    </div>
-  </section>
-  <!-- Best Sellers -->
-  <section class="item-showcase">
-    <h2>Best Sellers</h2>
-    <div class="item-grid">
-      <div class="items-card">
-        <img src="images/Rolex.jpg" alt="Rolex GMT-Master II">
-        <div class="item-info">
-          <h3>Rolex GMT-Master II</h3>
-          <p>Price = Ksh 105,700.90</p>
-        </div>
-      </div>
-      <div class="items-card">
-        <img src="images/Pierre.jpg" alt="Pierre Watch">
-        <div class="item-info">
-          <h3>Pierre Richardson PR5721</h3>
-          <p>Price = Ksh 21,799.90</p>
-        </div>
-      </div>
-      <div class="items-card">
-        <img src="images/Macbook.jpg" alt="MacBook">
-        <div class="item-info">
-          <h3>MacBook Pro 13</h3>
-          <p>Price = $199.90</p>
-        </div>
-      </div>
-      <div class="items-card">
-        <img src="images/Airpods.jpg" alt="S20 Earphone">
-        <div class="item-info">
-          <h3>S20 Bluetooth Earphone</h3>
-          <p>Price = Ksh 1,200.00</p>
-        </div>
-      </div>
-      <div class="items-card">
-        <img src="images/Rolex.jpg" alt="Rolex Unworn">
-        <div class="item-info">
-          <h3>Rolex Unworn 2023</h3>
-          <p>Price = Ksh 116,892.00</p>
-        </div>
-      </div>
+      <!-- your slides here -->
     </div>
   </section>
 
-  <!-- Latest Items -->
+  <!-- Best Sellers (placeholder container for dynamic) -->
+  <section class="item-showcase">
+    <h2>Best Sellers</h2>
+    <div id="best-sellers-container"></div>
+  </section>
+
+  <!-- Latest Items (placeholder container) -->
   <section class="item-showcase latest-items">
     <div class="glow-section">
       <div class="glow-box">
         <h1 class="glow-text">Latest Items</h1>
-        <p>class="glow-sub">Fresh drops just for you</p>
+        <p class="glow-sub">Fresh drops just for you</p>
       </div>
     </div>
-    <div class="item-grid">
-      <div class="item-card">
-        <img src="images/Sneakers.jpg" alt="Men black sneakers">
-        <h3>Men black sneakers</h3>
-        <p>Ksh 3,499</p>
-        <div class="stars" data-rating="4"></div>
-      </div>
-      <div class="item-card">
-        <img src="images/Matebook.jpg" alt="Huawei matebook fold">
-        <h3>Huawei matebook fold HD</h3>
-        <p>Ksh 450,000.90</p>
-        <div class="stars" data-rating="5"></div>
-      </div>
-      <div class="item-card">
-        <img src="images/Canvas.jpg" alt="Living room canvas">
-        <h3>Living room Art canvas</h3>
-        <p>Ksh 4,500</p>
-        <div class="stars" data-rating="3"></div>
-      </div>
-      <div class="item-card">
-        <img src="images/Speaker.jpg" alt="Portable speaker">
-        <h3>Dual 6.5in Portable Speaker</h3>
-        <p>Ksh 6,001.30</p>
-        <div class="stars" data-rating="4"></div>
-      </div>
-      <div class="item-card">
-        <img src="images/Television.jpg" alt="32 inch television">
-        <h3>Vitron HTC3200S 32\" Inches Bluetooth Connectivity TV</h3>
-        <p>Ksh 12,099.83</p>
-        <div class="stars" data-rating="3"></div>
-      </div>
-      <div class="item-card">
-        <img src="images/Blender.jpg" alt="Multi-functional blender">
-        <h3>1.5L Glass Jar 2-in-1 Multifunctional Blender</h3>
-        <p>Ksh 2,001.30</p>
-        <div class="stars" data-rating="4"></div>
-      </div>
-      <div class="item-card">
-        <img src="images/Earpods.jpg" alt="Wireless speakers">
-        <h3>GUIXIA Air31 Bluetooth Transparent In Ear Headphones</h3>
-        <p>Ksh 601.00</p>
-        <div class="stars" data-rating="4"></div>
-      </div>
-      <div class="item-card">
-        <img src="images/Net.jpg" alt="Mosquito net">
-        <h3>Purple Round Mosquito Net For Single Bed-FREE SIZE</h3>
-        <p>Ksh 978.05</p>
-        <div class="stars" data-rating="4"></div>
-      </div>
-    </div>
+    <div id="latest-items-container"></div>
   </section>
 
   <!-- Modal -->
   <div id="itemModal" class="modal">
-    <div class="modal-content" id="modalContent">
+    <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
-      <img id="modalImg" src="" alt="">
+      <img id="modalImg" src="" alt="" />
       <h2 id="modalTitle"></h2>
       <p id="modalDesc"></p>
       <div class="price-section">
         <span>Price: </span><strong id="modalPrice"></strong>
       </div>
       <div class="quantity-control">
-        <button class="qty-btn" data-action="dec" type="button" aria-label="Decrease quantity">−</button>
-        <input type="number" id="itemQty" value="1" min="1" inputmode="numeric">
-        <button class="qty-btn" data-action="inc" type="button" aria-label="Increase quantity">+</button>
+        <button class="qty-btn" data-action="dec">−</button>
+        <input type="number" id="itemQty" value="1" min="1" />
+        <button class="qty-btn" data-action="inc">+</button>
       </div>
       <p><strong>Total: </strong><span id="modalTotal"></span></p>
-      <button id="addToCartBtn" class="cart-btn" type="button">Add to Cart</button>
+      <button id="addToCartBtn" class="cart-btn">Add to Cart</button>
     </div>
   </div>
 
@@ -224,23 +109,14 @@
   <footer class="footer">
     <div class="seller-login-cta">
       <h2>Are You a Seller?</h2>
-      <a href="seller_login.html">
-        <button><span>Login</span></button>
-      </a>
+      <a href="seller_login.html"><button><span>Login</span></button></a>
     </div>
     <p>Cash Rules Everything Around Me</p>
     <p>&copy; 2025 Ezorelle. All rights reserved.</p>
   </footer>
-
-  <!-- Scripts -->
-  <script src="script.js"></script>
-
-  <!-- Floating Chat Button -->
-  <div id="chatBtn">
-    <i class="fas fa-comment-dots"></i>
-  </div>
-
-  <!-- Chat Window -->
+  ...
+  <!-- Chat -->
+  <div id="chatBtn"><i class="fas fa-comment-dots"></i></div>
   <div id="chatWindow" class="chat-window">
     <div class="chat-header">
       <span>Assistant</span>
@@ -251,9 +127,13 @@
       <p>how can I help you today?</p>
     </div>
     <div class="chat-footer">
-      <input type="text" id="chatInput" placeholder="Type a message...">
+      <input type="text" id="chatInput" placeholder="Type a message..." />
       <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
+
+
+</body>
+<script src="scripts/script.js"></script>
 </body>
 </html>

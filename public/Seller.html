@@ -1,98 +1,74 @@
+<script src="scripts/authGuard.js"></script>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <link rel="stylesheet" href="seller.css">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Vendora Seller Dashboard for managing products, orders, statistics, and profile settings.">
-  <meta name="keywords" content="seller dashboard, e-commerce, Vendora, product management">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; img-src 'self' https://via.placeholder.com;">
-  <meta property="og:title" content="Vendora Seller Dashboard">
-  <meta property="og:description" content="Manage your Vendora store with ease.">
-  <meta property="og:type" content="website">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vendora Seller Dashboard</title>
 
+  <link rel="stylesheet" href="Seller.css">
+
+
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
 </head>
 
 <body>
-  <div class="dashboard-container">
-    <!-- Sidebar -->
-    <nav class="sidebar" role="navigation" aria-label="Main navigation">
-      <h2>Vendora</h2>
-      <ul>
-        <li><button class="active" onclick="showSection('items', this)" aria-label="View Items">🛒 Items</button></li>
-        <li><button onclick="showSection('orders', this)" aria-label="View Orders">📦 Orders</button></li>
-        <li><button onclick="showSection('statistics', this)" aria-label="View Statistics">📊 Statistics</button></li>
-        <li><button onclick="showSection('profile', this)" aria-label="View Profile">👤 Profile</button></li>
-      </ul>
+  <header>
+    <nav>
+      <div class="nav-item active"><i class="bx bx-home"></i>Dashboard</div>
+      <div class="nav-item"><i class="bx bx-cart"></i>Orders</div>
+      <div class="nav-item"><i class="bx bx-package"></i>Products</div>
+      <div class="nav-item"><i class="bx bx-user"></i>Customers</div>
+      <div class="nav-item"><i class="bx bx-bar-chart-alt"></i>Reports</div>
+      <a href="Settings.html" class="nav-item active"><i class="bx bx-cog"></i>Settings</a>
     </nav>
+  </header>
 
-    <!-- Main Content -->
-    <main class="main-content" role="main">
-      <!-- Items Section -->
-      <section id="items-section" class="dashboard-section active" aria-labelledby="items-heading">
-        <h2 id="items-heading">Your Items</h2>
-        <button class="add-product-btn" onclick="openAddProductForm()" aria-label="Add new product">+ Add Product</button>
-        <div class="product-grid" id="productGrid"></div>
-      </section>
+  <main>
+    <h2>Welcome back, Jeff</h2>
 
-      <!-- Orders Section -->
-      <section id="orders-section" class="dashboard-section" aria-labelledby="orders-heading">
-        <h2 id="orders-heading">Orders</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Order ID</th>
-              <th>Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>#1234</td>
-              <td>2025-09-20</td>
-              <td>Pending</td>
-              <td><button aria-label="View order details">View</button></td>
-            </tr>
-            <!-- Add more rows dynamically via JS -->
-          </tbody>
-        </table>
-      </section>
-
-      <!-- Statistics Section -->
-      <section id="statistics-section" class="dashboard-section" aria-labelledby="statistics-heading">
-        <h2 id="statistics-heading">Statistics</h2>
-        <div id="sales-chart" style="height: 300px;">
-          <!-- Placeholder for chart (e.g., Chart.js) -->
-          <p>Sales charts and revenue details will go here.</p>
-        </div>
-      </section>
-
-      <!-- Profile Section -->
-      <section id="profile-section" class="dashboard-section" aria-labelledby="profile-heading">
-        <h2 id="profile-heading">Profile</h2>
-        <form id="profile-form">
-          <label for="store-name">Store Name</label>
-          <input type="text" id="store-name" name="store-name" required>
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required>
-          <button type="submit" aria-label="Save profile changes">Save Changes</button>
-        </form>
-      </section>
-    </main>
-
-    <!-- Off-canvas Panel -->
-    <div id="item-panel" class="item-panel" role="dialog" aria-labelledby="panelTitle">
-      <button class="close-btn" aria-label="Close product details" onclick="closePanel()">&times;</button>
-      <img id="panelImg" src="" alt="">
-      <h2 id="panelTitle"></h2>
-      <p class="price" id="panelPrice"></p>
-      <p class="stock" id="panelStock"></p>
-      <p class="desc" id="panelDesc"></p>
+    <div class="search-bar">
+      <input type="text" placeholder="Search orders, products, or customers">
+      <select>
+        <option>--filter--</option>
+        <option>Last 7 days</option>
+        <option>Last 30 days</option>
+        <option>Last 6 months</option>
+        <option>Last year</option>
+      </select>
     </div>
 
-        <div class="overlay" id="overlay" onclick="closePanel()"></div>
-        <script src="scripts/seller.js"></script>
-    </body>
-    </html>
+    <section class="cards">
+      <div class="card primary">
+        <h3>Total Sales</h3>
+        <p>$12,345</p>
+      </div>
+
+      <div class="card">
+        <h3>Orders Today</h3>
+        <p>45</p>
+      </div>
+
+      <div class="card">
+        <h3>Products Sold</h3>
+        <p>120</p>
+      </div>
+
+      <div class="card primary">
+        <h3>Customers</h3>
+        <p>500</p>
+      </div>
+
+      <div class="card actions">
+        <ul>
+          <li><i class="bx bx-plus-circle"></i>Add Product</li>
+          <li><i class="bx bx-list-ul"></i>View Orders</li>
+          <li><i class="bx bx-user-pin"></i>Manage Customers</li>
+          <li><i class="bx bx-file"></i>Generate Report</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

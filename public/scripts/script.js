@@ -310,4 +310,9 @@ function closeModal() {
   document.getElementById("itemModal").style.display = "none";
 }
 
-// Add more modal and cart logic here if not already present
+// Save user role in localStorage
+if (user.role === "seller") {
+  localStorage.setItem("userRole", "seller");
+} else {
+  localStorage.setItem("userRole", "buyer");
+}
