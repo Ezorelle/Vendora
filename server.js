@@ -87,6 +87,23 @@ app.post("/api/auth/login", (req, res) => {
   });
 });
 
+// --- LOGOUT ROUTE ---
+app.post("/api/auth/logout", (req, res) => {
+  if (req.session.user) {
+    console.log("🚪 Logging out:", req.session.user.username);
+    req.session.destroy((err) => {
+      if (err) {
+        console.error("Logout error:", err);
+        return res.status(500).json({ message: "Error logging out" });
+      }
+      res.clearCookie("connect.sid"); // Clear the session cookie
+      res.json({ message: "Logged out successfully" });
+    });
+  } else {
+    res.status(400).json({ message: "No active session" });
+  }
+});
+
 const productsRouter = require("./src/api/products");
 const ordersRouter = require("./src/api/orders");
 const paymentsRouter = require("./src/api/payments");
