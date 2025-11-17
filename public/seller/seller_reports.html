@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reports | Vendora</title>
+  <link rel="stylesheet" href="../styles/Seller.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <nav class="navbar">
+    <h2>Vendora Seller Dashboard</h2>
+    <ul>
+      <li><a href="Seller.html">Dashboard</a></li>
+      <li><a href="Seller_product.html">Products</a></li>
+      <li><a href="Seller_orders.html">Orders</a></li>
+      <li><a href="customers.html">Customers</a></li>
+      <li><a class="active" href="Seller_reports.html">Reports</a></li>
+      <li><a href="Settings.html">Settings</a></li>
+    </ul>
+  </nav>
+
+  <div class="content">
+    <h3>Reports & Analytics</h3>
+
+    <!-- Summary Cards -->
+    <div class="report-summary">
+      <div class="summary-card">
+        <h4>Total Sales</h4>
+        <p>Ksh 25,000</p>
+      </div>
+      <div class="summary-card">
+        <h4>Total Orders</h4>
+        <p>42</p>
+      </div>
+      <div class="summary-card">
+        <h4>Pending Orders</h4>
+        <p>5</p>
+      </div>
+      <div class="summary-card">
+        <h4>Products</h4>
+        <p>12</p>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div class="charts-container">
+      <div class="chart-box">
+        <h4>Monthly Sales (Ksh)</h4>
+        <canvas id="barChart"></canvas>
+      </div>
+      <div class="chart-box">
+        <h4>Top Categories</h4>
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Product Performance Table -->
+    <h4>Product Performance</h4>
+    <table class="report-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Units Sold</th>
+          <th>Revenue (Ksh)</th>
+          <th>Rating</th>
+          <th>Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Demo Product</td>
+          <td>50</td>
+          <td>5000</td>
+          <td>⭐4.8</td>
+          <td>12</td>
+        </tr>
+        <tr>
+          <td>Bronchiles</td>
+          <td>30</td>
+          <td>3000</td>
+          <td>⭐4.6</td>
+          <td>8</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script src="../scripts/seller.js"></script>
+</body>
+</html>

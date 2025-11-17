@@ -9,6 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  // Detect which page this script is running on
+  const currentPage = window.location.pathname.split("/").pop().toLowerCase();
+  const isSellerLogin = currentPage === "seller_login.html";
+
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -21,6 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
+      // Hit the same unified login API
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -31,13 +36,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!response.ok) throw new Error(data.message || "Login failed.");
 
-      // Save session info locally (optional)
+      // ✅ Save user session data
+      localStorage.setItem("authToken", data.token || "sampleToken");
       localStorage.setItem("userRole", data.role);
       localStorage.setItem("username", data.username);
+      localStorage.setItem("sessionStart", Date.now().toString());
 
-      // Redirect user
-      if (data.role === "seller") {
-        window.location.href = "Seller.html";
+      // ✅ Also save to sessionStorage (used by authGuard)
+      sessionStorage.setItem("isLoggedIn", "true");
+      sessionStorage.setItem("role", data.role);
+      sessionStorage.setItem("username", data.username);
+
+      // ✅ Redirect based on role or current page
+      if (data.role === "seller" || isSellerLogin) {
+        window.location.href = "seller.html";
       } else {
         window.location.href = "index.html";
       }

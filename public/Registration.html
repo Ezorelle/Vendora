@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Vendora - Register</title>
-  <link rel="stylesheet" href="registration.css">
+  <link rel="stylesheet" href="styles/Registration.css">
 </head>
 <body>
   <div class="container">
@@ -21,7 +21,8 @@
         <!-- Registration form (POSTs to Express backend) -->
         <form action="/register" method="POST">
           <input type="text" name="fullname" placeholder="Full Name" required>
-<input type="text" name="Username" placeholder="Username" required>
+        <input type="text" name="username" placeholder="Username" required>
+
           <input type="email" name="email" placeholder="Email" required>
           <input type="password" name="password" placeholder="Password" required>
           <input type="password" name="confirm_password" placeholder="Confirm Password" required>

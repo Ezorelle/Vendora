@@ -1,33 +1,61 @@
 ﻿const express = require("express");
 const router = express.Router();
+const Product = require("../models/Productmodel");
 
-// Temporary in-memory product store
-let products = [];
+// ----------------------------
+// 🛒 ADD PRODUCT (Seller side)
+// ----------------------------
+router.post("/add", async (req, res) => {
+  try {
+    const { name, price, stock, category, image, description } = req.body;
 
-// GET /api/products
-router.get("/", (req, res) => {
-  res.json(products);
+    if (!name || !price || !stock || !category || !image) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const newProduct = new Product({
+      sellerId: req.session.user?._id, // optional
+      name,
+      price,
+      stock,
+      category,
+      image,
+      description,
+    });
+
+    await newProduct.save();
+    console.log("✅ Product added:", name);
+    res.status(200).json({ message: "Product added successfully" });
+  } catch (error) {
+    console.error("❌ Error adding product:", error);
+    res.status(500).json({ message: "Server error while adding product" });
+  }
 });
 
-// POST /api/products
-router.post("/", (req, res) => {
-  const product = { id: Date.now().toString(), ...req.body };
-  products.push(product);
-  res.status(201).json(product);
+// ----------------------------
+// 📦 GET ALL PRODUCTS (For index.html)
+// ----------------------------
+router.get("/", async (req, res) => {
+  try {
+    const products = await Product.find().sort({ createdAt: -1 });
+    res.json(products);
+  } catch (error) {
+    console.error("❌ Error fetching products:", error);
+    res.status(500).json({ message: "Error loading products" });
+  }
 });
 
-// PUT /api/products/:id
-router.put("/:id", (req, res) => {
-  products = products.map((p) =>
-    p.id === req.params.id ? { ...p, ...req.body } : p
-  );
-  res.json({ ok: true });
-});
-
-// DELETE /api/products/:id
-router.delete("/:id", (req, res) => {
-  products = products.filter((p) => p.id !== req.params.id);
-  res.status(204).send();
+// ----------------------------
+// ❌ DELETE PRODUCT (Optional)
+// ----------------------------
+router.delete("/:id", async (req, res) => {
+  try {
+    await Product.findByIdAndDelete(req.params.id);
+    res.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error("❌ Error deleting product:", error);
+    res.status(500).json({ message: "Error deleting product" });
+  }
 });
 
 module.exports = router;

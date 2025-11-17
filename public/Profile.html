@@ -4,112 +4,99 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>User Profile - Vendora</title>
-  <link rel="stylesheet" href="Profile.css">
+  <link rel="stylesheet" href="styles/Profile.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body>
-<div class="profile-container">
-  <div class="profile-header">
-    <div class="profile-pic-container">
-      <img id="profile-pic" src="default-pfp.png" alt="Profile Picture">
-      <label for="file-input" class="edit-icon">
-        <i class="fas fa-camera"></i>
-      </label>
-      <input type="file" id="file-input" accept="image/*">
+  <div class="profile-container">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-pic-container">
+        <img id="profile-pic" src="default-pfp.png" alt="Profile Picture">
+        <label for="file-input" class="edit-icon"><i class="fas fa-camera"></i></label>
+        <input type="file" id="file-input" accept="image/*">
+      </div>
+
+      <div class="profile-info">
+        <h2>Welcome, <span id="username">User</span>!</h2>
+        <p id="email">user@example.com</p>
+        <p><strong>Vendora Balance:</strong> KSh <span id="balance">0</span></p>
+      </div>
     </div>
-    <div class="profile-info">
-      <h2>Welcome, Japhiter!</h2>
-      <p>ezorelle23@gmail.com</p>
-      <p><strong>Vendora Balance:</strong> KSh 0</p>
+
+    <!-- Quick Links -->
+    <div class="section">
+      <h3>Quick Links</h3>
+      <div class="card"><div class="card-left"><i class="fas fa-star"></i><span>Ratings & Reviews</span></div></div>
+      <div class="card"><div class="card-left"><i class="fas fa-ticket-alt"></i><span>Vouchers</span></div></div>
+      <div class="card"><div class="card-left"><i class="fas fa-heart"></i><span>Wishlist</span></div></div>
+      <div class="card"><div class="card-left"><i class="fas fa-store"></i><span>Follow Seller</span></div></div>
+      <div class="card"><div class="card-left"><i class="fas fa-history"></i><span>Recently Viewed</span></div></div>
+      <div class="card"><div class="card-left"><i class="fas fa-search"></i><span>Recently Searched</span></div></div>
     </div>
-    <i class="fas fa-user-circle fa-3x" style="color:#5a67d8;"></i>
+
+    <!-- History -->
+    <div class="section">
+      <h3>History</h3>
+      <div class="card">
+        <div class="card-left"><i class="fas fa-box"></i><span>Order History</span></div>
+      </div>
+    </div>
+
+    <!-- Settings -->
+    <div class="section">
+      <h3>My Settings</h3>
+      <div class="card"><div class="card-left"><i class="fas fa-credit-card"></i><span>Payment Settings</span></div></div>
+      <div class="card"><div class="card-left"><i class="fas fa-map-marker-alt"></i><span>Address Book</span></div></div>
+      <div class="card"><div class="card-left"><i class="fas fa-cog"></i><span>Account Management</span></div></div>
+      <div class="card"><div class="card-left"><i class="fas fa-user-slash"></i><span>Close Account</span></div></div>
+    </div>
+
+    <!-- Logout -->
+    <button id="logoutBtn" class="logout-btn">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
   </div>
 
-  <!-- Quick Links -->
-  <div class="section">
-    <h3>Quick Links</h3>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-star"></i>
-        <span>Ratings & Reviews</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-ticket-alt"></i>
-        <span>Vouchers</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-heart"></i>
-        <span>Wishlist</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-store"></i>
-        <span>Follow Seller</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-history"></i>
-        <span>Recently Viewed</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-search"></i>
-        <span>Recently Searched</span>
-      </div>
-    </div>
-  </div>
+  <!-- Scripts -->
+  <script src="scripts/authGuard.js"></script>
+  <script>
+    // Fetch and display user data
+    async function loadUserProfile() {
+      try {
+        const res = await fetch('/api/user', { credentials: 'include' });
+        if (!res.ok) throw new Error('User not logged in');
+        const user = await res.json();
 
-  <!-- History -->
-  <div class="section">
-    <h3>History</h3>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-box"></i>
-        <span>Order History</span>
-      </div>
-    </div>
-  </div>
+        document.getElementById('username').textContent = user.username || 'Guest';
+        document.getElementById('email').textContent = user.email || 'No email';
+        document.getElementById('balance').textContent = user.balance || '0';
+      } catch (error) {
+        console.error(error);
+        window.location.href = 'login.html';
+      }
+    }
 
-  <!-- Settings -->
-  <div class="section">
-    <h3>My Settings</h3>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-credit-card"></i>
-        <span>Payment Settings</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-map-marker-alt"></i>
-        <span>Address Book</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-cog"></i>
-        <span>Account Management</span>
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-left">
-        <i class="fas fa-user-slash"></i>
-        <span>Close Account</span>
-      </div>
-    </div>
-  </div>
+    // Logout functionality
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+      try {
+        const res = await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include',
+        });
+        if (res.ok) {
+          localStorage.clear();
+          window.location.href = 'login.html';
+        } else {
+          alert('Error logging out.');
+        }
+      } catch (error) {
+        console.error('Logout failed:', error);
+      }
+    });
 
-  <!-- Logout -->
-  <a href="login.html" class="logout-btn">
-    <i class="fas fa-sign-out-alt"></i> Logout
-  </a>
-</div>
+    loadUserProfile();
+  </script>
 </body>
 </html>

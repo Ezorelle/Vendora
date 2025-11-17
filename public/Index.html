@@ -4,13 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vendora – Discover Vendors</title>
-  <link rel="stylesheet" href="Style.css" >
+  <link rel="stylesheet" href="styles/Style.css" >
   <link rel="stylesheet"   href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
 </head>
 <body>
-  <!-- Navbar -->
+  
+ <!-- Navbar -->
 <header class="navbar">
-  <div class="logo"><a href="/">Vendora</a></div>
+  <div class="logo"><a href="index.html">Vendora</a></div>
 
   <div class="search-container">
     <input type="text" placeholder="Search vendors, categories…" class="search-input" />
@@ -20,9 +21,22 @@
   <nav>
     <ul class="nav-links">
       <li><a href="vendors.html">Vendors</a></li>
-      <li><a href="categories.html">Categories</a></li>
+
+      <li class="nav-categories">
+        <button type="button" id="categoriesBtn" class="categories-btn">
+          Categories <i class="fas fa-chevron-down"></i>
+        </button>
+        <ul id="categoriesDropdown" class="categories-dropdown hidden">
+          <li>All</li>
+          <li>Clothing</li>
+          <li>Electronics</li>
+          <li>Beauty</li>
+          <li>Home & Living</li>
+        </ul>
+      </li>
+
       <li class="nav-cart">
-        <a href="Cart.html"><i class="fas fa-shopping-cart"></i><span id="cartCountNav">0</span></a>
+        <a href="cart.html"><i class="fas fa-shopping-cart"></i><span id="cartCountNav">0</span></a>
       </li>
       <li class="nav-settings">
         <a href="settings.html"><i class="fas fa-cog"></i></a>
@@ -109,7 +123,7 @@
   <footer class="footer">
     <div class="seller-login-cta">
       <h2>Are You a Seller?</h2>
-      <a href="seller_login.html"><button><span>Login</span></button></a>
+      <a href="seller/Seller_login.html"><button><span>Login</span></button></a>
     </div>
     <p>Cash Rules Everything Around Me</p>
     <p>&copy; 2025 Ezorelle. All rights reserved.</p>
@@ -131,6 +145,63 @@
       <button id="sendChat"><i class="fas fa-paper-plane"></i></button>
     </div>
   </div>
+
+  <script>
+async function loadProducts() {
+  const latestContainer = document.getElementById("latest-items-container");
+  const bestSellersContainer = document.getElementById("best-sellers-container");
+
+  try {
+    const res = await fetch("/api/products");
+    const products = await res.json();
+
+    latestContainer.innerHTML = "";
+    bestSellersContainer.innerHTML = "";
+
+    if (products.length === 0) {
+      latestContainer.innerHTML = "<p>No products yet.</p>";
+      bestSellersContainer.innerHTML = "<p>No products yet.</p>";
+      return;
+    }
+
+    // Latest products
+    const latestProducts = products.slice(0, 6); // top 6 newest
+    latestProducts.forEach(p => {
+      const card = document.createElement("div");
+      card.classList.add("product-card");
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>KSh ${p.price}</p>
+        <p>${p.category}</p>
+      `;
+      latestContainer.appendChild(card);
+    });
+
+    // Best Sellers (example: top 6 products with highest stock, adjust as needed)
+    const bestSellers = products.sort((a, b) => b.stock - a.stock).slice(0, 6);
+    bestSellers.forEach(p => {
+      const card = document.createElement("div");
+      card.classList.add("product-card");
+      card.innerHTML = `
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p>KSh ${p.price}</p>
+        <p>${p.category}</p>
+      `;
+      bestSellersContainer.appendChild(card);
+    });
+
+  } catch (err) {
+    console.error("Error loading products:", err);
+    latestContainer.innerHTML = "<p>Failed to load products.</p>";
+    bestSellersContainer.innerHTML = "<p>Failed to load products.</p>";
+  }
+}
+
+document.addEventListener("DOMContentLoaded", loadProducts);
+
+</script>
 
 
 </body>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vendora - Seller Registration</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: #f9f9fb;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    .register-box {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 380px;
+      text-align: center;
+    }
+
+    .register-box h2 {
+      margin-bottom: 1.5rem;
+      color: #6A0DAD;
+    }
+
+    .register-box input {
+      width: 100%;
+      padding: 0.8rem;
+      margin: 0.6rem 0;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      font-size: 1rem;
+    }
+
+    .register-box button {
+      width: 100%;
+      padding: 0.8rem;
+      margin-top: 1rem;
+      background: #6A0DAD;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .register-box button:hover {
+      background: #580b8f;
+    }
+
+    .register-box p {
+      margin-top: 1rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .register-box p a {
+      color: #6A0DAD;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .register-box p a:hover {
+      text-decoration: underline;
+    }
+
+    .error-box {
+      color: red;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+
+    .success-box {
+      color: green;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="register-box">
+    <h2>Seller Registration</h2>
+    <form id="registerForm">
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <input type="password" id="confirmPassword" placeholder="Confirm Password" required />
+      <div id="errorBox" class="error-box"></div>
+      <div id="successBox" class="success-box"></div>
+      <button type="submit">Register</button>
+    </form>
+    <p>Already have an account? <a href="Seller_login.html">Login</a></p>
+  </div>
+
+ <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("registerForm");
+  const usernameInput = document.getElementById("username");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const confirmPasswordInput = document.getElementById("confirmPassword");
+  const errorBox = document.getElementById("errorBox");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    errorBox.style.display = "none";
+
+    const username = usernameInput.value.trim();
+    const email = emailInput.value.trim();
+    const password = passwordInput.value.trim();
+    const confirmPassword = confirmPasswordInput.value.trim();
+
+    try {
+      const response = await fetch("/seller/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          fullname: username,
+          shopname: username,
+          email,
+          password,
+          confirm_password: confirmPassword,
+        }),
+      });
+
+      // 🟢 Handle text or JSON safely
+      const text = await response.text();
+
+      if (!response.ok) {
+        errorBox.style.display = "block";
+        errorBox.textContent = text.replace("⚠️", "").trim() || "Something went wrong.";
+        return;
+      }
+
+      // ✅ Registration success → redirect
+      window.location.href = "Seller_login.html";
+
+    } catch (err) {
+      errorBox.style.display = "block";
+      errorBox.textContent = "Network error. Please try again.";
+      console.error("Registration error:", err);
+    }
+  });
+});
+</script>
+
+
+
+</body>
+</html>

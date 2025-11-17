@@ -1,96 +1,48 @@
-<script src="scripts/authGuard.js"></script>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings | Vendora</title>
-  <link rel="stylesheet" href="Settings.css" />
-  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings</title>
+    <link rel="stylesheet" href="styles/Settings.css">
 </head>
 <body>
-  <!-- Navbar (simplified placeholder) -->
-  <header class="navbar">
-    <div class="logo"><a href="/">Vendora</a></div>
-    <nav>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li id="dashboardLink" style="display:none;"><a href="Seller.html">Dashboard</a></li>
-        <li><a href="settings.html" class="active">Settings</a></li>
-      </ul>
-    </nav>
-  </header>
+    <header>
+        <!-- Home & Logout buttons instead of nav -->
+        <button id="home-btn">Home</button>
+        <button id="logout-btn">Logout</button>
+    </header>
 
-  <main class="settings-container">
-    <h2>Settings</h2>
-    <p id="settingsDesc">Manage your account, store, and preferences.</p>
+    <main>
+        <h1>Settings</h1>
+        <p>Welcome, <span id="username">User</span></p>
 
-    <!-- 🟣 Buyer Settings Section -->
-    <section id="buyerSettings" class="settings-section">
-      <h3><i class="bx bx-user-circle"></i> Account Information</h3>
-      <form>
-        <label>Full Name</label>
-        <input type="text" placeholder="Enter your full name">
-        <label>Email</label>
-        <input type="email" placeholder="Enter your email">
-        <label>Phone</label>
-        <input type="tel" placeholder="Enter your phone number">
-        <button class="save-btn">Save Changes</button>
-      </form>
+        <!-- Example existing settings sections -->
+        <section id="profile-section">
+            <h2>Profile</h2>
+            <form id="profile-form">
+                <label>Full Name: <input type="text" name="fullname"></label>
+                <label>Email: <input type="email" name="email"></label>
+                <button type="submit">Update Profile</button>
+            </form>
+        </section>
 
-      <h3><i class="bx bx-notification"></i> Notifications</h3>
-      <div class="setting-item">
-        <span>Enable order alerts</span>
-        <label class="switch">
-          <input type="checkbox" checked>
-          <span class="slider"></span>
-        </label>
-      </div>
+        <section id="password-section">
+            <h2>Change Password</h2>
+            <form id="password-form">
+                <label>Current Password: <input type="password" name="current_password"></label>
+                <label>New Password: <input type="password" name="new_password"></label>
+                <button type="submit">Change Password</button>
+            </form>
+        </section>
 
-      <div class="setting-item">
-        <span>Newsletter</span>
-        <label class="switch">
-          <input type="checkbox">
-          <span class="slider"></span>
-        </label>
-      </div>
-    </section>
+        <!-- Add other previous settings sections here -->
+    </main>
 
-    <!-- 🟣 Seller Settings Section -->
-    <section id="sellerSettings" class="settings-section">
-      <h3><i class="bx bx-store-alt"></i> Store Settings</h3>
-      <form>
-        <label>Store Name</label>
-        <input type="text" placeholder="Your store name">
-        <label>Store Description</label>
-        <textarea rows="3" placeholder="Short store description"></textarea>
-        <label>Currency</label>
-        <select>
-          <option>USD ($)</option>
-          <option selected>KES (Ksh)</option>
-          <option>EUR (€)</option>
-        </select>
-        <button class="save-btn">Update Store</button>
-      </form>
+    <footer>
+        <p>&copy; 2023 Vendora. All rights reserved.</p>
+    </footer>
 
-      <h3><i class="bx bx-lock"></i> Security</h3>
-      <form>
-        <label>Current Password</label>
-        <input type="password" placeholder="Enter current password">
-        <label>New Password</label>
-        <input type="password" placeholder="Enter new password">
-        <button class="save-btn">Change Password</button>
-      </form>
-    </section>
-  </main>
-
-  <footer class="footer">
-    <p>&copy; 2025 Vendora. All rights reserved.</p>
-    <p>Cash Rules Everything Around Me</p>
-  </footer>
-
-
-<script src="scripts/Settings.js"></script>
+    <script src="scripts/settings.js"></script>
 </body>
 </html>

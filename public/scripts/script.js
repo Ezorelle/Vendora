@@ -273,46 +273,49 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-// Slideshow Logic
-let slideIndex = 1;
-showSlides(slideIndex);
 
-function changeSlide(n) {
-  showSlides(slideIndex += n);
-}
+document.addEventListener('DOMContentLoaded', () => {
 
-function currentSlide(n) {
-  showSlides(slideIndex = n);
-}
+    // Categories Dropdown Toggle
+    const categoriesBtn = document.getElementById('categoriesBtn');
+    const categoriesDropdown = document.getElementById('categoriesDropdown');
 
-function showSlides(n) {
-  let slides = document.getElementsByClassName("slide");
-  let dots = document.getElementsByClassName("dot");
-  if (n > slides.length) { slideIndex = 1 }
-  if (n < 1) { slideIndex = slides.length }
-  for (let i = 0; i < slides.length; i++) {
-    slides[i].style.display = "none";
-  }
-  for (let i = 0; i < dots.length; i++) {
-    dots[i].className = dots[i].className.replace(" active", "");
-  }
-  slides[slideIndex - 1].style.display = "block";
-  dots[slideIndex - 1].className += " active";
-}
+    if (categoriesBtn && categoriesDropdown) {
+        const toggleDropdown = () => {
+            const isHidden = categoriesDropdown.classList.contains('hidden');
+            categoriesDropdown.classList.toggle('hidden', !isHidden);
+            categoriesBtn.classList.toggle('active', isHidden);
+            categoriesBtn.setAttribute('aria-expanded', isHidden);
+        };
 
-// Auto-slide every 5 seconds
-setInterval(() => {
-  changeSlide(1);
-}, 5000);
+        // Toggle dropdown on button click
+        categoriesBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // Prevent click from bubbling to document
+            toggleDropdown();
+        });
 
-// Modal Logic (Placeholder - Expand as needed)
-function closeModal() {
-  document.getElementById("itemModal").style.display = "none";
-}
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!categoriesBtn.contains(e.target) && !categoriesDropdown.contains(e.target)) {
+                categoriesDropdown.classList.add('hidden');
+                categoriesBtn.classList.remove('active');
+                categoriesBtn.setAttribute('aria-expanded', false);
+            }
+        });
 
-// Save user role in localStorage
-if (user.role === "seller") {
-  localStorage.setItem("userRole", "seller");
-} else {
-  localStorage.setItem("userRole", "buyer");
-}
+        // Close dropdown when pressing Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                categoriesDropdown.classList.add('hidden');
+                categoriesBtn.classList.remove('active');
+                categoriesBtn.setAttribute('aria-expanded', false);
+            }
+        });
+    }
+
+    // ============================
+    // ...existing Vendora code...
+    // Example: search, filters, cart, modals, chatbot, etc.
+    // ============================
+
+});

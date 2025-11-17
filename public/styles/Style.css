@@ -94,6 +94,69 @@ a {
   position: relative;
 }
 
+/* Navbar Categories Dropdown */
+.nav-categories {
+  position: relative;
+}
+
+.categories-btn {
+  background: none;
+  border: none;
+  color: #bb86fc; /* light purple for visibility */
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: color 0.3s ease;
+}
+
+.categories-btn:hover {
+  color: #fff;
+}
+
+.categories-btn i {
+  transition: transform 0.2s ease;
+}
+
+.categories-btn.active i {
+  transform: rotate(180deg);
+}
+
+/* Dropdown container */
+.categories-dropdown {
+  position: absolute;
+  top: 40px;
+  left: 0;
+  background: #1a0d2e; /* match your dark theme */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  border-radius: 10px;
+  list-style: none;
+  padding: 10px 0;
+  width: 180px;
+  z-index: 999;
+  transition: all 0.3s ease;
+}
+
+/* Hidden by default */
+.hidden {
+  display: none;
+}
+
+/* Dropdown items */
+.categories-dropdown li {
+  padding: 10px 15px;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.categories-dropdown li:hover {
+  background: #3700b3;
+  color: #bb86fc;
+}
+
+
 #cartCountNav {
   position: absolute;
   top: -8px;

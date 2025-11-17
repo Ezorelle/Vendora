@@ -2,35 +2,59 @@ const express = require("express");
 const path = require("path");
 const session = require("express-session");
 require("dotenv").config();
+const mongoose = require("mongoose");
 
+// Import Models
+const User = require("./models/UserModel");
+const Seller = require("./models/SellerModel");
+const productsRouter = require("./src/api/product");
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ----------------------------
+// ⚙️ DATABASE CONNECTION
+// ----------------------------
+mongoose.connect("mongodb+srv://ezorelle23:Jadakiss@cluster0.dlmpmvb.mongodb.net/vendoraDB?retryWrites=true&w=majority", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ Connected to MongoDB Atlas (VendoraDB)"))
+.catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// ----------------------------
+// 🔧 MIDDLEWARE SETUP
+// ----------------------------
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
+    cookie: { maxAge: 3 * 60 * 60 * 1000 }, // 3 hours
   })
 );
 
+// ----------------------------
+// 🌐 STATIC FILES
+// ----------------------------
 app.use(express.static(path.join(__dirname, "public")));
 
-app.use((req, res, next) => {
-  if (req.path === "/" || req.path === "/Loadscreen.html") {
+// ----------------------------
+// 🚀 LOADSCREEN HANDLER
+// ----------------------------
+app.get("/", (req, res) => {
+  if (!req.session.visitedLoadscreen) {
     req.session.visitedLoadscreen = true;
     return res.sendFile(path.join(__dirname, "public", "Loadscreen.html"));
+  } else {
+    return res.redirect("/index.html");
   }
-  if (!req.session.visitedLoadscreen) {
-    return res.redirect("/");
-  }
-  next();
 });
 
-const users = [];
-
+// ----------------------------
+// 🔒 PASSWORD VALIDATION
+// ----------------------------
 const validatePassword = (password) => {
   if (password.length < 8) return "Password must be at least 8 characters long";
   if (!/[a-zA-Z]/.test(password)) return "Password must contain at least one letter";
@@ -38,56 +62,139 @@ const validatePassword = (password) => {
   return null;
 };
 
-app.post("/register", (req, res) => {
-  const { fullname, username, email, password, confirm_password } = req.body;
-  if (!fullname || !username || !email || !password || !confirm_password)
-    return res.status(400).send("⚠️ All fields are required");
-  if (password !== confirm_password)
-    return res.status(400).send("⚠️ Passwords do not match");
+// ----------------------------
+// 👤 USER REGISTRATION
+// ----------------------------
+app.post("/register", async (req, res) => {
+  try {
+    const { fullname, username, email, password, confirm_password } = req.body;
 
-  const passwordError = validatePassword(password);
-  if (passwordError) return res.status(400).send(`⚠️ ${passwordError}`);
+    if (!fullname || !username || !email || !password || !confirm_password)
+      return res.status(400).send("⚠️ All fields are required");
 
-  if (users.find((u) => u.username === username))
-    return res.status(400).send("⚠️ Username already taken");
-  if (users.find((u) => u.email === email))
-    return res.status(400).send("⚠️ Email already registered");
+    if (password !== confirm_password)
+      return res.status(400).send("⚠️ Passwords do not match");
 
-  users.push({ fullname, username, email, password });
-  console.log("✅ New user registered:", username);
-  res.redirect("/login.html");
+    const passwordError = validatePassword(password);
+    if (passwordError) return res.status(400).send(`⚠️ ${passwordError}`);
+
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }],
+    });
+    if (existingUser)
+      return res.status(400).send("⚠️ Username or email already exists");
+
+    const newUser = new User({
+      fullname,
+      username,
+      email,
+      password,
+      role: "user",
+    });
+
+    await newUser.save();
+    console.log("✅ New user registered:", username);
+    res.redirect("/login.html");
+  } catch (err) {
+    console.error("❌ Error registering user:", err);
+    res.status(500).send("⚠️ Server error while registering");
+  }
 });
 
+// ----------------------------
+// 🏪 SELLER REGISTRATION
+// ----------------------------
+app.post("/seller/register", async (req, res) => {
+  try {
+    const { fullname, shopname, email, password, confirm_password } = req.body;
 
-// --- LOGIN ROUTE ---
-app.post("/api/auth/login", (req, res) => {
-  const { username, password } = req.body;
-  if (!username || !password) {
-    return res.status(400).json({ message: "Username and password are required" });
+    if (!fullname || !shopname || !email || !password || !confirm_password)
+      return res.status(400).send("⚠️ All fields are required");
+
+    if (password !== confirm_password)
+      return res.status(400).send("⚠️ Passwords do not match");
+
+    const passwordError = validatePassword(password);
+    if (passwordError) return res.status(400).send(`⚠️ ${passwordError}`);
+
+    const existingSeller = await Seller.findOne({
+      $or: [{ shopname }, { email }],
+    });
+    if (existingSeller)
+      return res.status(400).send("⚠️ Shop name or email already exists");
+
+    const newSeller = new Seller({
+      fullname,
+      shopname,
+      email,
+      password,
+      role: "seller",
+    });
+
+    await newSeller.save();
+    console.log("✅ New seller registered:", shopname);
+    res.redirect("/seller_login.html");
+  } catch (err) {
+    console.error("❌ Error registering seller:", err);
+    res.status(500).send("⚠️ Server error while registering seller");
   }
-
-  const user = users.find(
-    (u) => u.username === username && u.password === password
-  );
-
-  if (!user) {
-    return res.status(401).json({ message: "Invalid username or password" });
-  }
-
-  // Store user session for 3 hours
-  req.session.user = { username: user.username, email: user.email };
-  req.session.cookie.maxAge = 3 * 60 * 60 * 1000; // in ms
-
-  console.log("🔑 Login successful:", username);
-
-  res.json({
-    message: "Login successful",
-    role: "buyer", // or seller later when roles exist
-    username: user.username,
-  });
 });
 
-// --- LOGOUT ROUTE ---
+// ----------------------------
+// 🔑 LOGIN (handles both user & seller)
+// ----------------------------
+app.post("/api/auth/login", async (req, res) => {
+  try {
+    const { username, password, role } = req.body;
+
+    if (!username || !password)
+      return res.status(400).json({ message: "Username and password are required" });
+
+    let account;
+
+    if (role === "seller") {
+      account = await Seller.findOne({
+        $or: [{ shopname: username }, { email: username }],
+        password,
+      });
+    } else {
+      account = await User.findOne({
+        $or: [{ username }, { email: username }],
+        password,
+      });
+    }
+
+    if (!account)
+      return res.status(401).json({ message: "Invalid credentials" });
+
+    req.session.user = {
+      fullname: account.fullname,
+      username: account.username || account.shopname,
+      email: account.email,
+      balance: account.balance || 0,
+      role: account.role,
+    };
+
+    console.log(`🔑 ${role} login successful:`, account.username || account.shopname);
+    res.json({ message: "Login successful", role: account.role });
+  } catch (err) {
+    console.error("❌ Login error:", err);
+    res.status(500).json({ message: "Server error during login" });
+  }
+});
+
+// ----------------------------
+// 📦 FETCH SESSION USER
+// ----------------------------
+app.get("/api/user", (req, res) => {
+  if (!req.session.user)
+    return res.status(401).json({ message: "Not logged in" });
+  res.json(req.session.user);
+});
+
+// ----------------------------
+// 🚪 LOGOUT
+// ----------------------------
 app.post("/api/auth/logout", (req, res) => {
   if (req.session.user) {
     console.log("🚪 Logging out:", req.session.user.username);
@@ -96,7 +203,7 @@ app.post("/api/auth/logout", (req, res) => {
         console.error("Logout error:", err);
         return res.status(500).json({ message: "Error logging out" });
       }
-      res.clearCookie("connect.sid"); // Clear the session cookie
+      res.clearCookie("connect.sid");
       res.json({ message: "Logged out successfully" });
     });
   } else {
@@ -104,7 +211,10 @@ app.post("/api/auth/logout", (req, res) => {
   }
 });
 
-const productsRouter = require("./src/api/products");
+// ----------------------------
+// 🧩 API ROUTERS
+// ----------------------------
+const productsRouter = require("./src/api/product");
 const ordersRouter = require("./src/api/orders");
 const paymentsRouter = require("./src/api/payments");
 const invoicesRouter = require("./src/api/invoices");
@@ -116,6 +226,12 @@ app.use("/api/payments", paymentsRouter);
 app.use("/api/invoices", invoicesRouter);
 app.use("/api/webhook", webhooksRouter);
 
+const productRoutes = require("./src/api/products");
+app.use("/api/products", productRoutes);
+
+// ----------------------------
+// ✅ SERVER START
+// ----------------------------
 app.listen(PORT, () => {
   console.log(`✅ Vendora running at http://localhost:${PORT}`);
 });

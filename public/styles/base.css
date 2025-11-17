@@ -1,8 +1,0 @@
-﻿/* base.css - typography and base elements */
-@import "variables.css";
-body { padding: 16px; }
-.container { max-width: var(--max-width); margin: 0 auto; padding: 16px; }
-h1,h2,h3 { color: #0f172a; margin-bottom: 8px; }
-p { color: var(--muted); margin-bottom: 8px; }
-button { cursor: pointer; border: 0; background: var(--accent); color: #fff; padding: 8px 12px; border-radius: 6px; }
-img { max-width:100%; display:block; }
