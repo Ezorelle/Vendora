@@ -21,6 +21,7 @@
   "homepage": "https://github.com/Ezorelle/Vendora#readme",
   "dependencies": {
     "axios": "1.12.2",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.0",

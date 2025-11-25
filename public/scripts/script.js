@@ -313,9 +313,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // ============================
-    // ...existing Vendora code...
-    // Example: search, filters, cart, modals, chatbot, etc.
-    // ============================
 
+    
 });

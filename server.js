@@ -1,34 +1,52 @@
+require("dotenv").config();
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
-require("dotenv").config();
 const mongoose = require("mongoose");
-
-// Import Models
-const User = require("./models/UserModel");
-const Seller = require("./models/SellerModel");
-const productsRouter = require("./src/api/product");
+const bcrypt = require("bcrypt");
+console.log("DEBUG MONGO_URI =", process.env.MONGO_URI);
 const app = express();
+
+// ----------------------------
+// 📦 ENV VARIABLES
+// ----------------------------
 const PORT = process.env.PORT || 3000;
+const MONGO_URI = process.env.MONGO_URI;
+const SESSION_SECRET = process.env.SESSION_SECRET || "fallback_secret_key";
 
-// ----------------------------
-// ⚙️ DATABASE CONNECTION
-// ----------------------------
-mongoose.connect("mongodb+srv://ezorelle23:Jadakiss@cluster0.dlmpmvb.mongodb.net/vendoraDB?retryWrites=true&w=majority", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log("✅ Connected to MongoDB Atlas (VendoraDB)"))
-.catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ----------------------------
-// 🔧 MIDDLEWARE SETUP
-// ----------------------------
+const User = require("./models/Usermodel");
+const Seller = require("./models/Sellermodel");
+const Product = require("./models/Productmodel");
+
+
+
+// 🧩 ROUTERS //
+
+const productsRouter = require("./src/api/products");
+const ordersRouter   = require("./src/api/orders");
+const paymentsRouter = require("./src/api/payments");
+const invoicesRouter = require("./src/api/invoices");
+const webhooksRouter = require("./src/api/webhooks");
+
+
+// ⚙️ DATABASE CONNECTION //
+
+mongoose
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ Connected to MongoDB"))
+  .catch((err) => console.error("❌ MongoDB connection error:", err));
+
+// 🔧 MIDDLEWARE  // 
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(
   session({
-    secret: process.env.SESSION_SECRET || "your-secret-key",
+    secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: { maxAge: 3 * 60 * 60 * 1000 }, // 3 hours
@@ -41,15 +59,14 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 
 // ----------------------------
-// 🚀 LOADSCREEN HANDLER
+// 🚀 LOADSCREEN
 // ----------------------------
 app.get("/", (req, res) => {
   if (!req.session.visitedLoadscreen) {
     req.session.visitedLoadscreen = true;
     return res.sendFile(path.join(__dirname, "public", "Loadscreen.html"));
-  } else {
-    return res.redirect("/index.html");
   }
+  res.redirect("/index.html");
 });
 
 // ----------------------------
@@ -84,15 +101,16 @@ app.post("/register", async (req, res) => {
     if (existingUser)
       return res.status(400).send("⚠️ Username or email already exists");
 
-    const newUser = new User({
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.create({
       fullname,
       username,
       email,
-      password,
+      password: hashedPassword,
       role: "user",
     });
 
-    await newUser.save();
     console.log("✅ New user registered:", username);
     res.redirect("/login.html");
   } catch (err) {
@@ -123,15 +141,16 @@ app.post("/seller/register", async (req, res) => {
     if (existingSeller)
       return res.status(400).send("⚠️ Shop name or email already exists");
 
-    const newSeller = new Seller({
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await Seller.create({
       fullname,
       shopname,
       email,
-      password,
+      password: hashedPassword,
       role: "seller",
     });
 
-    await newSeller.save();
     console.log("✅ New seller registered:", shopname);
     res.redirect("/seller_login.html");
   } catch (err) {
@@ -141,7 +160,7 @@ app.post("/seller/register", async (req, res) => {
 });
 
 // ----------------------------
-// 🔑 LOGIN (handles both user & seller)
+// 🔑 LOGIN (user & seller)
 // ----------------------------
 app.post("/api/auth/login", async (req, res) => {
   try {
@@ -155,16 +174,18 @@ app.post("/api/auth/login", async (req, res) => {
     if (role === "seller") {
       account = await Seller.findOne({
         $or: [{ shopname: username }, { email: username }],
-        password,
       });
     } else {
       account = await User.findOne({
         $or: [{ username }, { email: username }],
-        password,
       });
     }
 
     if (!account)
+      return res.status(401).json({ message: "Invalid credentials" });
+
+    const isMatch = await bcrypt.compare(password, account.password);
+    if (!isMatch)
       return res.status(401).json({ message: "Invalid credentials" });
 
     req.session.user = {
@@ -175,7 +196,7 @@ app.post("/api/auth/login", async (req, res) => {
       role: account.role,
     };
 
-    console.log(`🔑 ${role} login successful:`, account.username || account.shopname);
+    console.log(`🔑 Login successful: ${req.session.user.username}`);
     res.json({ message: "Login successful", role: account.role });
   } catch (err) {
     console.error("❌ Login error:", err);
@@ -199,10 +220,8 @@ app.post("/api/auth/logout", (req, res) => {
   if (req.session.user) {
     console.log("🚪 Logging out:", req.session.user.username);
     req.session.destroy((err) => {
-      if (err) {
-        console.error("Logout error:", err);
-        return res.status(500).json({ message: "Error logging out" });
-      }
+      if (err) return res.status(500).json({ message: "Error logging out" });
+
       res.clearCookie("connect.sid");
       res.json({ message: "Logged out successfully" });
     });
@@ -212,26 +231,17 @@ app.post("/api/auth/logout", (req, res) => {
 });
 
 // ----------------------------
-// 🧩 API ROUTERS
+// 🧩 API ROUTES
 // ----------------------------
-const productsRouter = require("./src/api/product");
-const ordersRouter = require("./src/api/orders");
-const paymentsRouter = require("./src/api/payments");
-const invoicesRouter = require("./src/api/invoices");
-const webhooksRouter = require("./src/api/webhooks");
-
 app.use("/api/products", productsRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/payments", paymentsRouter);
 app.use("/api/invoices", invoicesRouter);
 app.use("/api/webhook", webhooksRouter);
 
-const productRoutes = require("./src/api/products");
-app.use("/api/products", productRoutes);
 
-// ----------------------------
-// ✅ SERVER START
-// ----------------------------
+// 🚀 START SERVER //
+
 app.listen(PORT, () => {
-  console.log(`✅ Vendora running at http://localhost:${PORT}`);
+  console.log(`🚀 Vendora running at http://localhost:${PORT}`);
 });

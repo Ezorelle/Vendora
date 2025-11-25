@@ -100,24 +100,28 @@
   </section>
 
   <!-- Modal -->
-  <div id="itemModal" class="modal">
-    <div class="modal-content">
-      <span class="close" onclick="closeModal()">&times;</span>
-      <img id="modalImg" src="" alt="" />
-      <h2 id="modalTitle"></h2>
-      <p id="modalDesc"></p>
-      <div class="price-section">
-        <span>Price: </span><strong id="modalPrice"></strong>
-      </div>
-      <div class="quantity-control">
-        <button class="qty-btn" data-action="dec">−</button>
-        <input type="number" id="itemQty" value="1" min="1" />
-        <button class="qty-btn" data-action="inc">+</button>
-      </div>
-      <p><strong>Total: </strong><span id="modalTotal"></span></p>
-      <button id="addToCartBtn" class="cart-btn">Add to Cart</button>
+ <div id="itemModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <div class="modal-images">
+      <img id="modalMainImg" src="" alt="" />
+      <div id="modalThumbs" class="thumbs-container"></div>
     </div>
+    <h2 id="modalTitle"></h2>
+    <p id="modalPrice"></p>
+    <p id="modalStock"></p>
+    <p id="modalSeller"></p>
+    <p id="modalDesc"></p>
+    <div class="quantity-control">
+      <button class="qty-btn" data-action="dec">−</button>
+      <input type="number" id="itemQty" value="1" min="1" />
+      <button class="qty-btn" data-action="inc">+</button>
+    </div>
+    <p><strong>Total: </strong><span id="modalTotal"></span></p>
+    <button id="addToCartBtn" class="cart-btn">Add to Cart</button>
   </div>
+</div>
+
 
   <!-- Footer -->
   <footer class="footer">
@@ -146,7 +150,8 @@
     </div>
   </div>
 
-  <script>
+<script>
+
 async function loadProducts() {
   const latestContainer = document.getElementById("latest-items-container");
   const bestSellersContainer = document.getElementById("best-sellers-container");
@@ -158,39 +163,73 @@ async function loadProducts() {
     latestContainer.innerHTML = "";
     bestSellersContainer.innerHTML = "";
 
-    if (products.length === 0) {
+    if (!products.length) {
       latestContainer.innerHTML = "<p>No products yet.</p>";
       bestSellersContainer.innerHTML = "<p>No products yet.</p>";
       return;
     }
 
-    // Latest products
-    const latestProducts = products.slice(0, 6); // top 6 newest
-    latestProducts.forEach(p => {
+    function createCard(p) {
       const card = document.createElement("div");
-      card.classList.add("product-card");
+      card.classList.add("product-card", "item-card");
       card.innerHTML = `
         <img src="${p.image}" alt="${p.name}">
         <h3>${p.name}</h3>
         <p>KSh ${p.price}</p>
         <p>${p.category}</p>
+        <div class="item-info" style="display:none;">
+          <p>${p.description || "Fresh stock just for you!"}</p>
+        </div>
+        <button class="quick-add-btn">Add to Cart</button>
       `;
-      latestContainer.appendChild(card);
-    });
 
-    // Best Sellers (example: top 6 products with highest stock, adjust as needed)
-    const bestSellers = products.sort((a, b) => b.stock - a.stock).slice(0, 6);
-    bestSellers.forEach(p => {
-      const card = document.createElement("div");
-      card.classList.add("product-card");
-      card.innerHTML = `
-        <img src="${p.image}" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p>KSh ${p.price}</p>
-        <p>${p.category}</p>
-      `;
-      bestSellersContainer.appendChild(card);
-    });
+      // Open modal on card click (excluding quick-add button)
+      card.addEventListener("click", (e) => {
+        if (e.target.classList.contains("quick-add-btn")) return;
+        const img = card.querySelector("img").src;
+        const title = card.querySelector("h3").innerText;
+        const price = card.querySelector("p").innerText;
+        const desc = card.querySelector(".item-info p").innerText;
+        openModal(img, title, price, desc);
+      });
+
+      // Quick Add to Cart
+      const quickAddBtn = card.querySelector(".quick-add-btn");
+      quickAddBtn.addEventListener("click", () => {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const price = parseFloat(p.price);
+        const product = {
+          title: p.name,
+          price: price,
+          qty: 1,
+          img: p.image,
+          total: price,
+        };
+
+        const existing = cart.find(item => item.title === product.title);
+        if (existing) {
+          existing.qty += 1;
+          existing.total = existing.qty * existing.price;
+        } else {
+          cart.push(product);
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        renderCart();        // re-render navbar cart
+        updateCartCount();   // update cart count badge
+        alert(`${p.name} added to cart!`);
+      });
+
+      return card;
+    }
+
+    // Latest products
+    const latestProducts = products.slice(0, 6);
+    latestProducts.forEach(p => latestContainer.appendChild(createCard(p)));
+
+    // Best Sellers (highest stock)
+    const bestSellers = [...products].sort((a, b) => b.stock - a.stock).slice(0, 6);
+    bestSellers.forEach(p => bestSellersContainer.appendChild(createCard(p)));
 
   } catch (err) {
     console.error("Error loading products:", err);

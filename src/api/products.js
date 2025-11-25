@@ -1,6 +1,7 @@
 ﻿const express = require("express");
 const router = express.Router();
-const Product = require("../models/Productmodel");
+const Product = require("../../models/Productmodel");
+
 
 // ----------------------------
 // 🛒 ADD PRODUCT (Seller side)

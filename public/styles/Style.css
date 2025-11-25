@@ -612,3 +612,116 @@ a {
     right: 5%;
   }
 }
+
+/* ---------- PRODUCT CARD GRID ---------- */
+#latest-items-container,
+#best-sellers-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 15px;
+  padding: 10px;
+}
+
+/* ---------- PRODUCT CARD ---------- */
+.product-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+  font-family: sans-serif;
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.product-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.product-card img {
+  max-width: 100%;
+  height: 140px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+.product-card h3 {
+  font-size: 14px;
+  margin: 5px 0;
+  line-height: 1.2;
+  height: auto; /* ensure title is visible */
+}
+
+.product-card p.price {
+  font-size: 14px;
+  color: #1a1a1a;
+  font-weight: bold;
+}
+
+.product-card p.category {
+  font-size: 12px;
+  color: #555;
+}
+
+.product-card .seller-name {
+  font-size: 11px;
+  color: #888;
+  margin-top: 3px;
+}
+
+
+/* ---------- IMAGE ---------- */
+.product-card img {
+  max-width: 100%;
+  height: 130px;
+  object-fit: contain;
+  margin-bottom: 8px;
+}
+
+/* ---------- TITLE ---------- */
+.product-card h3 {
+  font-size: 14px;
+  margin: 5px 0;
+  color: #1a1a1a;   
+  line-height: 1.2;
+  max-height: 36px;  
+  text-overflow: ellipsis; 
+  -webkit-line-clamp: 2;    
+  -webkit-box-orient: vertical;
+}
+
+/* ---------- PRICE ---------- */
+.product-card p {
+  font-size: 13px;
+  margin: 3px 0;
+  color: #1a1a1a;
+  font-weight: bold;
+}
+
+/* ---------- CATEGORY ---------- */
+.product-card p:last-of-type {
+  font-weight: normal;
+  color: #555;
+  font-size: 12px;
+}
+
+/* ---------- QUICK ADD BUTTON ---------- */
+.quick-add-btn {
+  margin-top: 8px;
+  padding: 5px 8px;
+  font-size: 12px;
+  background-color: #bb86fc;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.quick-add-btn:hover {
+  background-color: #e65c00;
+}
