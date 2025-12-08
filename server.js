@@ -4,7 +4,7 @@ const path = require("path");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-console.log("DEBUG MONGO_URI =", process.env.MONGO_URI);
+
 const app = express();
 
 // ----------------------------

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product</title>
+    <link rel="stylesheet" href="styles/product.css">
+</head>
+<body>
+
+<div class="product-container">
+
+    <!-- Image slideshow -->
+    <div class="image-gallery">
+        <img id="mainImage" class="main-image" src="" alt="Product">
+
+        <div id="thumbnailContainer" class="thumbnail-container">
+            <!-- Thumbnails inserted dynamically -->
+        </div>
+    </div>
+
+    <!-- Product Info -->
+    <div class="product-info">
+        <h1 id="productName"></h1>
+        <div class="rating">⭐⭐⭐⭐☆</div>
+
+        <p class="stock">In stock: <span id="productStock"></span></p>
+
+        <p class="price">
+            KSh <span id="productPrice"></span>
+        </p>
+
+        <button id="addToCartBtn" class="add-to-cart">Add to Cart</button>
+    </div>
+</div>
+
+<!-- Other Products Section -->
+<h2 class="other-title">More from this category</h2>
+<div id="relatedProducts" class="other-products"></div>
+
+<script src="scripts/productDsip.js"></script>
+</body>
+</html>

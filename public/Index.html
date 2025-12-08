@@ -99,30 +99,7 @@
     <div id="latest-items-container"></div>
   </section>
 
-  <!-- Modal -->
- <div id="itemModal" class="modal">
-  <div class="modal-content">
-    <span class="close" onclick="closeModal()">&times;</span>
-    <div class="modal-images">
-      <img id="modalMainImg" src="" alt="" />
-      <div id="modalThumbs" class="thumbs-container"></div>
-    </div>
-    <h2 id="modalTitle"></h2>
-    <p id="modalPrice"></p>
-    <p id="modalStock"></p>
-    <p id="modalSeller"></p>
-    <p id="modalDesc"></p>
-    <div class="quantity-control">
-      <button class="qty-btn" data-action="dec">−</button>
-      <input type="number" id="itemQty" value="1" min="1" />
-      <button class="qty-btn" data-action="inc">+</button>
-    </div>
-    <p><strong>Total: </strong><span id="modalTotal"></span></p>
-    <button id="addToCartBtn" class="cart-btn">Add to Cart</button>
-  </div>
-</div>
-
-
+  
   <!-- Footer -->
   <footer class="footer">
     <div class="seller-login-cta">
@@ -184,14 +161,10 @@ async function loadProducts() {
       `;
 
       // Open modal on card click (excluding quick-add button)
-      card.addEventListener("click", (e) => {
-        if (e.target.classList.contains("quick-add-btn")) return;
-        const img = card.querySelector("img").src;
-        const title = card.querySelector("h3").innerText;
-        const price = card.querySelector("p").innerText;
-        const desc = card.querySelector(".item-info p").innerText;
-        openModal(img, title, price, desc);
-      });
+     card.addEventListener("click", (e) => {
+  if (e.target.classList.contains("quick-add-btn")) return;
+  window.location.href = `product.html?id=${p._id}`;
+});
 
       // Quick Add to Cart
       const quickAddBtn = card.querySelector(".quick-add-btn");
