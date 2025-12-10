@@ -4,40 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles/product.css">
 </head>
 <body>
 
-<div class="product-container">
+<!-- ⭐ PRODUCT SPOTLIGHT SECTION (DARK HERO) ⭐ -->
+<section class="product-section">
+    <div class="product-container">
 
-    <!-- Image slideshow -->
-    <div class="image-gallery">
-        <img id="mainImage" class="main-image" src="" alt="Product">
+        <!-- LEFT: Rectangular Image Gallery w/ Arrows -->
+        <div class="image-gallery">
+            <div class="gallery-wrapper">
+                <button class="arrow left-arrow" id="prevBtn">‹</button>
+                <div class="slideshow-box">
+                    <img id="mainImage" class="main-image" src="" alt="Product Image">
+                </div>
+                <button class="arrow right-arrow" id="nextBtn">›</button>
+            </div>
 
-        <div id="thumbnailContainer" class="thumbnail-container">
-            <!-- Thumbnails inserted dynamically -->
+            <div id="thumbnailContainer" class="thumbnail-container">
+                <!-- Thumbnails inserted dynamically -->
+            </div>
         </div>
+
+        <!-- RIGHT: Product Information -->
+        <div class="product-info">
+            <h1 id="productName"></h1>
+
+            <div class="rating">
+                <span id="ratingStars">⭐⭐⭐⭐☆</span>
+                <span class="rating-count">(12 reviews)</span>
+            </div>
+
+            <p class="stock">In stock: <span id="productStock"></span></p>
+
+            <p class="price">
+                KSh <span id="productPrice"></span>
+            </p>
+
+            <button id="addToCartBtn" class="add-to-cart">Add to Cart</button>
+        </div>
+
     </div>
+</section>
 
-    <!-- Product Info -->
-    <div class="product-info">
-        <h1 id="productName"></h1>
-        <div class="rating">⭐⭐⭐⭐☆</div>
-
-        <p class="stock">In stock: <span id="productStock"></span></p>
-
-        <p class="price">
-            KSh <span id="productPrice"></span>
-        </p>
-
-        <button id="addToCartBtn" class="add-to-cart">Add to Cart</button>
-    </div>
-</div>
-
-<!-- Other Products Section -->
+<!--RELATED SECTION  -->
 <h2 class="other-title">More from this category</h2>
 <div id="relatedProducts" class="other-products"></div>
 
-<script src="scripts/productDsip.js"></script>
+<script src="scripts/productDisp.js"></script>
 </body>
 </html>

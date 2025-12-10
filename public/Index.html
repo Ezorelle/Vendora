@@ -160,11 +160,11 @@ async function loadProducts() {
         <button class="quick-add-btn">Add to Cart</button>
       `;
 
-      // Open modal on card click (excluding quick-add button)
-     card.addEventListener("click", (e) => {
-  if (e.target.classList.contains("quick-add-btn")) return;
-  window.location.href = `product.html?id=${p._id}`;
-});
+      // Click on the card redirects to product.html with the correct _id
+      card.addEventListener("click", (e) => {
+        if (e.target.classList.contains("quick-add-btn")) return;
+        window.location.href = `product.html?id=${p._id}`;
+      });
 
       // Quick Add to Cart
       const quickAddBtn = card.querySelector(".quick-add-btn");
@@ -172,14 +172,14 @@ async function loadProducts() {
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const price = parseFloat(p.price);
         const product = {
-          title: p.name,
+          id: p._id,            
           price: price,
           qty: 1,
           img: p.image,
           total: price,
         };
 
-        const existing = cart.find(item => item.title === product.title);
+        const existing = cart.find(item => item.id === product.id);
         if (existing) {
           existing.qty += 1;
           existing.total = existing.qty * existing.price;

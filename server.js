@@ -209,7 +209,7 @@ app.post("/api/auth/login", async (req, res) => {
 // ----------------------------
 app.get("/api/user", (req, res) => {
   if (!req.session.user)
-    return res.status(401).json({ message: "Not logged in" });
+    return res.status(401).json({ message: "❌Not logged in" });
   res.json(req.session.user);
 });
 
