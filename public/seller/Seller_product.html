@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Seller Products | Vendora</title>
- <link rel="stylesheet" href="../styles/Seller.css">
-
-
+  <link rel="stylesheet" href="../styles/Seller.css">
 </head>
+
 <body>
+
+  <!-- NAVBAR -->
   <nav class="navbar">
     <h2>Vendora Seller Dashboard</h2>
     <div class="nav-links">
@@ -21,6 +22,8 @@
     </div>
   </nav>
 
+
+  <!-- PRODUCTS SECTION -->
   <section class="products-section">
     <div class="header">
       <h3>Your Products</h3>
@@ -39,38 +42,45 @@
     </div>
   </section>
 
-  <!-- Add Product Modal -->
-<div class="modal" id="productModal">
-  <div class="modal-content">
-    <h3>Add New Product</h3>
-    <form id="productForm">
-      <input type="text" id="productName" placeholder="Product Name" required />
-      <input type="number" id="productPrice" placeholder="Price" required />
-      <input type="number" id="productStock" placeholder="Stock" required />
 
-      <!-- Category Selection -->
-      <select id="productCategory" required>
-        <option value="" disabled selected>Select Category</option>
-        <option value="electronics">Electronics</option>
-        <option value="clothing">Clothing</option>
-        <option value="food">Food</option>
-        <option value="beauty">Beauty</option>
-        <option value="other">Other</option>
-      </select>
+  <!-- ADD PRODUCT MODAL -->
+  <div class="modal" id="productModal">
+    <div class="modal-content">
+      <h3>Add New Product</h3>
 
-      <input type="file" id="productImage" accept="image/*" />
+      <form id="productForm">
+        
+        <input type="text" id="productName" placeholder="Product Name" required />
+        <input type="number" id="productPrice" placeholder="Price" required />
+        <input type="number" id="productStock" placeholder="Stock" required />
 
-      <div class="modal-actions">
-        <button type="submit" class="save-btn">Add Product</button>
-        <button type="button" id="closeModal" class="cancel-btn">Cancel</button>
-      </div>
-    </form>
+        <!-- Category Selection -->
+        <select id="productCategory" required>
+          <option value="" disabled selected>Select Category</option>
+          <option value="electronics">Electronics</option>
+          <option value="clothing">Clothing</option>
+          <option value="food">Food</option>
+          <option value="beauty">Beauty</option>
+          <option value="other">Other</option>
+        </select>
+
+        <!-- File Input -->
+        <input type="file" id="productImage" accept="image/*" multiple />
+
+        <!-- Preview Container -->
+        <div id="imagePreview" class="image-preview"></div>
+ 
+        <!-- Buttons -->
+        <div class="modal-actions">
+          <button type="submit" class="save-btn">Add Product</button>
+          <button type="button" id="closeModal" class="cancel-btn">Cancel</button>
+        </div>
+
+      </form>
+    </div>
   </div>
-</div>
 
-  
-    <script src="../scripts/seller.js"></script>
-
+  <script src="../scripts/seller.js"></script>
 
 </body>
 </html>

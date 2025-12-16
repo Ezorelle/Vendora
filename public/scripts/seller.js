@@ -1,14 +1,22 @@
-// seller.js
+// ============================
+// GLOBAL IMAGE STORE
+// ============================
+let selectedImages = [];
 
+// ============================
+// DOM ELEMENTS
+// ============================
 const addProductBtn = document.getElementById("addProductBtn");
 const productModal = document.getElementById("productModal");
 const closeModal = document.getElementById("closeModal");
 const productForm = document.getElementById("productForm");
 const productContainer = document.getElementById("productContainer");
+const imageInput = document.getElementById("productImage");
+const imagePreview = document.getElementById("imagePreview");
 
-// ----------------------------
-// 🔸 Load products from backend
-// ----------------------------
+// ============================
+// LOAD PRODUCTS
+// ============================
 document.addEventListener("DOMContentLoaded", async () => {
   try {
     const res = await fetch("/api/products");
@@ -26,42 +34,73 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// ----------------------------
-// 🔸 Modal open/close
-// ----------------------------
+// ============================
+// MODAL CONTROLS
+// ============================
 addProductBtn.onclick = () => (productModal.style.display = "flex");
-closeModal.onclick = () => (productModal.style.display = "none");
+closeModal.onclick = closeModalHandler;
 window.onclick = (e) => {
-  if (e.target === productModal) productModal.style.display = "none";
+  if (e.target === productModal) closeModalHandler();
 };
 
-// ----------------------------
-// 🔸 Add new product via API
-// ----------------------------
+function closeModalHandler() {
+  productModal.style.display = "none";
+  productForm.reset();
+  imagePreview.innerHTML = "";
+  selectedImages = [];
+}
+
+// ============================
+// IMAGE INPUT (APPEND, NOT REPLACE)
+// ============================
+imageInput.addEventListener("change", () => {
+  const files = [...imageInput.files];
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      selectedImages.push(reader.result);
+      renderImagePreview();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // allow re-selecting same image
+  imageInput.value = "";
+});
+
+function renderImagePreview() {
+  imagePreview.innerHTML = "";
+
+  selectedImages.forEach(src => {
+    const img = document.createElement("img");
+    img.src = src;
+    imagePreview.appendChild(img);
+  });
+}
+
+// ============================
+// SUBMIT PRODUCT (FIXED)
+// ============================
 productForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const name = document.getElementById("productName").value.trim();
-  const price = parseFloat(document.getElementById("productPrice").value);
-  const stock = parseInt(document.getElementById("productStock").value);
-  const category = document.getElementById("productCategory").value;
-  const imageInput = document.getElementById("productImage").files[0];
+  const product = {
+    name: document.getElementById("productName").value.trim(),
+    price: parseFloat(document.getElementById("productPrice").value),
+    stock: parseInt(document.getElementById("productStock").value),
+    category: document.getElementById("productCategory").value,
+    images: selectedImages.length
+      ? selectedImages
+      : ["default-product.jpg"]
+  };
 
-  // Convert image to Base64 if uploaded
-  let image = "default-product.jpg";
-
-  if (imageInput) {
-    const reader = new FileReader();
-    reader.onload = async () => {
-      image = reader.result; // Base64 string
-      await saveProduct({ name, price, stock, category, image });
-    };
-    reader.readAsDataURL(imageInput);
-  } else {
-    await saveProduct({ name, price, stock, category, image });
-  }
+  await saveProduct(product);
 });
 
+// ============================
+// SAVE PRODUCT
+// ============================
 async function saveProduct(product) {
   try {
     const res = await fetch("/api/products/add", {
@@ -71,29 +110,28 @@ async function saveProduct(product) {
     });
 
     const data = await res.json();
-    console.log(data);
-
-    // API returns MongoDB _id, we use it in delete
     product._id = data.productId || null;
 
     renderProductCard(product);
-
-    productForm.reset();
-    productModal.style.display = "none";
+    closeModalHandler();
   } catch (err) {
     console.error("Error adding product:", err);
   }
 }
 
-// ----------------------------
-// 🔸 Render product card
-// ----------------------------
+// ============================
+// RENDER PRODUCT CARD
+// ============================
 function renderProductCard(product) {
   const productCard = document.createElement("div");
   productCard.classList.add("product-card");
 
   const img = document.createElement("img");
-  img.src = product.image || "default-product.jpg";
+  img.src =
+  product.images?.[0] ||
+  product.image ||
+  "default-product.jpg";
+
   img.alt = product.name;
 
   const h4 = document.createElement("h4");
@@ -107,7 +145,7 @@ function renderProductCard(product) {
   p2.classList.add("stock");
 
   const p3 = document.createElement("p");
-  p3.textContent = `Category: ${product.category.charAt(0).toUpperCase() + product.category.slice(1)}`;
+  p3.textContent = `Category: ${capitalize(product.category)}`;
   p3.classList.add("category");
 
   const deleteBtn = document.createElement("button");
@@ -126,4 +164,8 @@ function renderProductCard(product) {
 
   productCard.append(img, h4, p1, p2, p3, deleteBtn);
   productContainer.appendChild(productCard);
+}
+
+function capitalize(text) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
 }

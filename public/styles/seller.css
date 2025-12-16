@@ -459,3 +459,26 @@ body {
   font-weight: 600;
   color: #374151;
 }
+
+.image-preview {
+  margin-top: 12px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 5px 0;
+}
+
+.image-preview img {
+  width: 70px;
+  height: 70px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 2px solid #e3e3e3;
+  background: #f8f8f8;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.image-preview img:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.15);
+}
