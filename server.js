@@ -1,11 +1,34 @@
 require("dotenv").config();
+
 const express = require("express");
 const path = require("path");
 const session = require("express-session");
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const multer = require("multer");
+const fs = require("fs");
 
 const app = express();
+
+// ----------------------------
+// 📂 MULTER CONFIGURATION
+// ----------------------------
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const uploadDir = path.join(__dirname, "uploads");
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `${file.fieldname}-${uniqueSuffix}${ext}`);
+  },
+});
+
+const upload = multer({ storage });
 
 // ----------------------------
 // 📦 ENV VARIABLES
@@ -14,24 +37,25 @@ const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 const SESSION_SECRET = process.env.SESSION_SECRET || "fallback_secret_key";
 
-
+// ----------------------------
+// 🗄️ MODELS
+// ----------------------------
 const User = require("./models/Usermodel");
 const Seller = require("./models/Sellermodel");
 const Product = require("./models/Productmodel");
 
-
-
-// 🧩 ROUTERS //
-
+// ----------------------------
+// 🧩 ROUTERS
+// ----------------------------
 const productsRouter = require("./src/api/products");
-const ordersRouter   = require("./src/api/orders");
+const ordersRouter = require("./src/api/orders");
 const paymentsRouter = require("./src/api/payments");
 const invoicesRouter = require("./src/api/invoices");
 const webhooksRouter = require("./src/api/webhooks");
 
-
-// ⚙️ DATABASE CONNECTION //
-
+// ----------------------------
+// ⚙️ DATABASE CONNECTION
+// ----------------------------
 mongoose
   .connect(MONGO_URI, {
     useNewUrlParser: true,
@@ -40,10 +64,11 @@ mongoose
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// 🔧 MIDDLEWARE  // 
+// ----------------------------
+// 🔧 MIDDLEWARE
+// ----------------------------
+app.use(express.json()); // Parse JSON bodies (safe with Multer)
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
 app.use(
   session({
     secret: SESSION_SECRET,
@@ -53,10 +78,9 @@ app.use(
   })
 );
 
-// ----------------------------
-// 🌐 STATIC FILES
-// ----------------------------
+// Serve static files
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ← Important for images!
 
 // ----------------------------
 // 🚀 LOADSCREEN
@@ -86,20 +110,21 @@ app.post("/register", async (req, res) => {
   try {
     const { fullname, username, email, password, confirm_password } = req.body;
 
-    if (!fullname || !username || !email || !password || !confirm_password)
+    if (!fullname || !username || !email || !password || !confirm_password) {
       return res.status(400).send("⚠️ All fields are required");
+    }
 
-    if (password !== confirm_password)
+    if (password !== confirm_password) {
       return res.status(400).send("⚠️ Passwords do not match");
+    }
 
     const passwordError = validatePassword(password);
     if (passwordError) return res.status(400).send(`⚠️ ${passwordError}`);
 
-    const existingUser = await User.findOne({
-      $or: [{ username }, { email }],
-    });
-    if (existingUser)
+    const existingUser = await User.findOne({ $or: [{ username }, { email }] });
+    if (existingUser) {
       return res.status(400).send("⚠️ Username or email already exists");
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -126,20 +151,21 @@ app.post("/seller/register", async (req, res) => {
   try {
     const { fullname, shopname, email, password, confirm_password } = req.body;
 
-    if (!fullname || !shopname || !email || !password || !confirm_password)
+    if (!fullname || !shopname || !email || !password || !confirm_password) {
       return res.status(400).send("⚠️ All fields are required");
+    }
 
-    if (password !== confirm_password)
+    if (password !== confirm_password) {
       return res.status(400).send("⚠️ Passwords do not match");
+    }
 
     const passwordError = validatePassword(password);
     if (passwordError) return res.status(400).send(`⚠️ ${passwordError}`);
 
-    const existingSeller = await Seller.findOne({
-      $or: [{ shopname }, { email }],
-    });
-    if (existingSeller)
+    const existingSeller = await Seller.findOne({ $or: [{ shopname }, { email }] });
+    if (existingSeller) {
       return res.status(400).send("⚠️ Shop name or email already exists");
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -166,8 +192,9 @@ app.post("/api/auth/login", async (req, res) => {
   try {
     const { username, password, role } = req.body;
 
-    if (!username || !password)
+    if (!username || !password) {
       return res.status(400).json({ message: "Username and password are required" });
+    }
 
     let account;
 
@@ -181,12 +208,9 @@ app.post("/api/auth/login", async (req, res) => {
       });
     }
 
-    if (!account)
+    if (!account || !(await bcrypt.compare(password, account.password))) {
       return res.status(401).json({ message: "Invalid credentials" });
-
-    const isMatch = await bcrypt.compare(password, account.password);
-    if (!isMatch)
-      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
     req.session.user = {
       fullname: account.fullname,
@@ -208,8 +232,9 @@ app.post("/api/auth/login", async (req, res) => {
 // 📦 FETCH SESSION USER
 // ----------------------------
 app.get("/api/user", (req, res) => {
-  if (!req.session.user)
-    return res.status(401).json({ message: "❌Not logged in" });
+  if (!req.session.user) {
+    return res.status(401).json({ message: "Not logged in" });
+  }
   res.json(req.session.user);
 });
 
@@ -217,17 +242,18 @@ app.get("/api/user", (req, res) => {
 // 🚪 LOGOUT
 // ----------------------------
 app.post("/api/auth/logout", (req, res) => {
-  if (req.session.user) {
-    console.log("🚪 Logging out:", req.session.user.username);
-    req.session.destroy((err) => {
-      if (err) return res.status(500).json({ message: "Error logging out" });
-
-      res.clearCookie("connect.sid");
-      res.json({ message: "Logged out successfully" });
-    });
-  } else {
-    res.status(400).json({ message: "No active session" });
+  if (!req.session.user) {
+    return res.status(400).json({ message: "No active session" });
   }
+
+  console.log("🚪 Logging out:", req.session.user.username);
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Error logging out" });
+    }
+    res.clearCookie("connect.sid");
+    res.json({ message: "Logged out successfully" });
+  });
 });
 
 // ----------------------------
@@ -239,9 +265,9 @@ app.use("/api/payments", paymentsRouter);
 app.use("/api/invoices", invoicesRouter);
 app.use("/api/webhook", webhooksRouter);
 
-
-// 🚀 START SERVER //
-
+// ----------------------------
+// 🚀 START SERVER
+// ----------------------------
 app.listen(PORT, () => {
   console.log(`🚀 Vendora running at http://localhost:${PORT}`);
 });
