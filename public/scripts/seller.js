@@ -1,19 +1,28 @@
-// GLOBAL IMAGE STORE
+// GLOBAL STATE
 let selectedImages = [];
 
 // DOM ELEMENTS
+
 const addProductBtn = document.getElementById("addProductBtn");
 const productModal = document.getElementById("productModal");
-const closeModal = document.getElementById("closeModal");
+const closeModalBtn = document.getElementById("closeModal");
 const productForm = document.getElementById("productForm");
 const productContainer = document.getElementById("productContainer");
 const imageInput = document.getElementById("productImage");
 const imagePreview = document.getElementById("imagePreview");
 
+// ============================
 // MODAL CONTROLS
-addProductBtn.onclick = () => (productModal.style.display = "flex");
-closeModal.onclick = closeModalHandler;
-window.onclick = (e) => { if (e.target === productModal) closeModalHandler(); };
+// ============================
+addProductBtn.onclick = () => {
+  productModal.style.display = "flex";
+};
+
+closeModalBtn.onclick = closeModalHandler;
+
+window.onclick = (e) => {
+  if (e.target === productModal) closeModalHandler();
+};
 
 function closeModalHandler() {
   productModal.style.display = "none";
@@ -22,100 +31,153 @@ function closeModalHandler() {
   selectedImages = [];
 }
 
-// IMAGE INPUT (store File objects, not base64)
+// ============================
+// IMAGE PREVIEW HANDLING
+// ============================
 imageInput.addEventListener("change", () => {
-  const files = [...imageInput.files];
-  selectedImages.push(...files);
+  const newFiles = [...imageInput.files];
+  selectedImages.push(...newFiles);
   renderImagePreview();
-  imageInput.value = ""; // allow re-selecting same files
+  imageInput.value = ""; // Allows re-selecting the same files
 });
 
 function renderImagePreview() {
   imagePreview.innerHTML = "";
-  selectedImages.forEach(file => {
+  selectedImages.forEach((file) => {
     const img = document.createElement("img");
     img.src = URL.createObjectURL(file);
+    img.alt = "Preview";
     imagePreview.appendChild(img);
   });
 }
 
-// SUBMIT PRODUCT
+// ============================
+// FETCH & RENDER PRODUCTS
+// ============================
+async function loadProducts() {
+  try {
+    const response = await fetch("/api/products", {
+      credentials: "include",
+    });
+
+    if (!response.ok) throw new Error("Failed to fetch products");
+
+    const products = await response.json();
+
+    productContainer.innerHTML = ""; // Clear existing (including demo card)
+
+    if (products.length === 0) {
+      productContainer.innerHTML = "<p style='grid-column: 1 / -1; text-align: center;'>No products yet. Add your first one!</p>";
+      return;
+    }
+
+    products.forEach(renderProductCard);
+  } catch (err) {
+    console.error("Error loading products:", err);
+    productContainer.innerHTML = "<p>Error loading products. Check console.</p>";
+  }
+}
+
+// Render single product card
+function renderProductCard(product) {
+  const card = document.createElement("div");
+  card.className = "product-card";
+
+  const img = document.createElement("img");
+  img.src = product.images?.[0] || "/images/placeholder.jpg"; // Add a placeholder image later
+  img.alt = product.name;
+
+  const name = document.createElement("h4");
+  name.textContent = product.name;
+
+  const price = document.createElement("p");
+  price.textContent = `KSh ${product.price}`;
+
+  const stock = document.createElement("p");
+  stock.className = "stock";
+  stock.textContent = product.stock > 0 ? "In Stock" : "Out of Stock";
+
+  const category = document.createElement("p");
+  category.textContent = `Category: ${capitalize(product.category)}`;
+
+  const deleteBtn = document.createElement("button");
+  deleteBtn.className = "delete-btn";
+  deleteBtn.textContent = "Delete";
+  deleteBtn.onclick = async () => {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+
+    try {
+      const res = await fetch(`/api/products/${product._id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+
+      if (res.ok) {
+        card.remove();
+      } else {
+        alert("Failed to delete product");
+      }
+    } catch (err) {
+      console.error("Delete error:", err);
+      alert("Error deleting product");
+    }
+  };
+
+  card.append(img, name, price, stock, category, deleteBtn);
+  productContainer.appendChild(card);
+}
+
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+// ============================
+// ADD PRODUCT SUBMISSION
+// ============================
 productForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   if (selectedImages.length === 0) {
-    return alert("Please select at least one image");
+    alert("Please select at least one image");
+    return;
   }
 
   const formData = new FormData();
   formData.append("name", document.getElementById("productName").value.trim());
   formData.append("price", document.getElementById("productPrice").value);
   formData.append("stock", document.getElementById("productStock").value);
-  formData.append("category", document.getElementById("productCategory").value || "other");
-  formData.append("description", document.getElementById("productDescription")?.value || "");
+  formData.append("category", document.getElementById("productCategory").value);
 
-  selectedImages.forEach(file => formData.append("images", file));
+  selectedImages.forEach((file) => {
+    formData.append("images", file);
+  });
 
   try {
-    const res = await fetch("/api/products/add", {
+    const response = await fetch("/api/products/add", {
       method: "POST",
-      body: formData, // <- multipart/form-data
+      body: formData,
+      credentials: "include",
     });
 
-    if (!res.ok) {
-      const errText = await res.text();
-      throw new Error(`HTTP ${res.status}: ${errText}`);
-    }
+    const result = await response.json();
 
-    const data = await res.json();
-    renderProductCard(data.product);
-    closeModalHandler();
+    if (response.ok) {
+      alert("Product added successfully!");
+      closeModalHandler();
+      selectedImages = []; // Clear global
+      await loadProducts(); // Refresh list dynamically (no reload!)
+    } else {
+      alert("Error: " + (result.message || "Failed to add product"));
+    }
   } catch (err) {
-    console.error("Error adding product:", err);
-    alert("Failed to add product. Check console for details.");
+    console.error("Upload error:", err);
+    alert("Network error. Check console for details.");
   }
 });
 
-// RENDER PRODUCT CARD
-function renderProductCard(product) {
-  const productCard = document.createElement("div");
-  productCard.classList.add("product-card");
-
-  const img = document.createElement("img");
-  img.src = product.images?.[0] || "default-product.jpg";
-  img.alt = product.name;
-
-  const h4 = document.createElement("h4");
-  h4.textContent = product.name;
-
-  const p1 = document.createElement("p");
-  p1.textContent = `KSh ${product.price}`;
-
-  const p2 = document.createElement("p");
-  p2.textContent = product.stock > 0 ? "In Stock" : "Out of Stock";
-  p2.classList.add("stock");
-
-  const p3 = document.createElement("p");
-  p3.textContent = `Category: ${capitalize(product.category)}`;
-  p3.classList.add("category");
-
-  const deleteBtn = document.createElement("button");
-  deleteBtn.textContent = "Delete";
-  deleteBtn.classList.add("delete-btn");
-  deleteBtn.onclick = async () => {
-    if (!product._id) return alert("Product cannot be deleted");
-    try {
-      await fetch(`/api/products/${product._id}`, { method: "DELETE" });
-      productCard.remove();
-    } catch (err) {
-      console.error("Error deleting product:", err);
-    }
-  };
-
-  productCard.append(img, h4, p1, p2, p3, deleteBtn);
-  productContainer.appendChild(productCard);
-}
-
-function capitalize(text) {
-  return text.charAt(0).toUpperCase() + text.slice(1);
-}
+// ============================
+// INITIAL LOAD
+// ============================
+window.addEventListener("DOMContentLoaded", () => {
+  loadProducts();
+});

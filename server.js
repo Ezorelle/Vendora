@@ -271,3 +271,5 @@ app.use("/api/webhook", webhooksRouter);
 app.listen(PORT, () => {
   console.log(`🚀 Vendora running at http://localhost:${PORT}`);
 });
+
+module.exports.upload = upload;  // Or module.exports = { app, upload };

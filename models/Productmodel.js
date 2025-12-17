@@ -4,13 +4,13 @@ const productSchema = new mongoose.Schema(
   {
     sellerId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: false, // seller not required for now
+      ref: "Seller",  
+      required: false,
     },
     name: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
     price: {
       type: Number,
@@ -19,24 +19,30 @@ const productSchema = new mongoose.Schema(
     stock: {
       type: Number,
       required: true,
-      default: 0
+      default: 0,
     },
     category: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
     },
-    image: {
-      type: String,
-      required: true, // you said image is required
+    images: {
+      type: [String],  // Array of image paths
+      required: true,
+      validate: {
+        validator: function(arr) {
+          return arr.length >= 1;  // At least one image
+        },
+        message: "At least one product image is required",
+      },
     },
     description: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   {
-    timestamps: true // creates createdAt + updatedAt automatically
+    timestamps: true,
   }
 );
 
