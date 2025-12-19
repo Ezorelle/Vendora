@@ -16,15 +16,25 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("productStock").textContent = product.stock;
     document.getElementById("productPrice").textContent = Number(product.price).toLocaleString();
 
-    // IMAGE HANDLING
-    const images = Array.isArray(product.image) ? product.image : [product.image];
-    
-    // DEBUG LINE — remove later
-    console.log("Images we're trying to use:", images);
+    // IMAGE HANDLING 
+    let images = [];
+    if (product.image) {
+      if (Array.isArray(product.image)) {
+        images = product.image.filter(img => img && typeof img === 'string' && img.trim() !== '');
+      } else if (typeof product.image === 'string' && product.image.trim() !== '') {
+        images = [product.image];
+      }
+    }
+
+    //at least one image (placeholder)
+    if (images.length === 0) {
+      images = ["https://via.placeholder.com/600?text=No+Image"];
+    }
+
+    console.log("Images we're trying to use (cleaned):", images);
 
     const mainImg = document.getElementById("mainImage");
-    mainImg.src = images[0] || "https://via.placeholder.com/600"; // fallback if empty
-
+    mainImg.src = images[0];
     let currentIndex = 0;
 
     // THUMBNAILS
@@ -43,7 +53,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       thumbContainer.appendChild(img);
     });
 
-    // ARROW BUTTONS
     document.getElementById("prevBtn").onclick = () => {
       currentIndex = (currentIndex - 1 + images.length) % images.length;
       mainImg.src = images[currentIndex];
@@ -62,7 +71,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
 
-    // AUTO SLIDESHOW (with proper pause on hover)
+    // AUTO SLIDESHOW
     let slideshowInterval;
     if (images.length > 1) {
       slideshowInterval = setInterval(() => {
@@ -82,7 +91,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     }
 
-    // RELATED PRODUCTS (Jumia grid)
+    // RELATED PRODUCTS - NOW SAFE TOO
     const relatedContainer = document.getElementById("relatedProducts");
     relatedContainer.innerHTML = "";
     const related = products
@@ -90,10 +99,17 @@ document.addEventListener("DOMContentLoaded", async () => {
       .slice(0, 8);
 
     related.forEach(p => {
+      // Reuse the same safe image logic
+      let relatedImg = "https://via.placeholder.com/150?text=No+Image";
+      if (p.image) {
+        if (Array.isArray(p.image) && p.image[0]) relatedImg = p.image[0];
+        else if (typeof p.image === 'string' && p.image.trim()) relatedImg = p.image;
+      }
+
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <img src="${Array.isArray(p.image) ? p.image[0] : p.image}" alt="${p.name}">
+        <img src="${relatedImg}" alt="${p.name}">
         <div class="info">
           <h3>${p.name}</h3>
           <div class="price">KSh ${Number(p.price).toLocaleString()}</div>
