@@ -43,6 +43,8 @@ const SESSION_SECRET = process.env.SESSION_SECRET || "fallback_secret_key";
 const User = require("./models/Usermodel");
 const Seller = require("./models/Sellermodel");
 const Product = require("./models/Productmodel");
+const orderRoutes = require("./routes/orders");
+app.use("/orders", orderRoutes);
 
 // ----------------------------
 // 🧩 ROUTERS

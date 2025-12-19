@@ -40,7 +40,6 @@
         </select>
       </fieldset>
 
-      <!-- PayPal -->
       <div class="payment-option">
         <div class="payment-header">
           <div class="left">
@@ -56,7 +55,6 @@
         </div>
       </div>
 
-      <!-- M-Pesa -->
       <div class="payment-option">
         <div class="payment-header">
           <div class="left">
@@ -73,7 +71,6 @@
         </div>
       </div>
 
-      <!-- Visa / Mastercard -->
       <div class="payment-option">
         <div class="payment-header">
           <div class="left">
@@ -107,66 +104,122 @@
   </main>
 
   <script>
-    // Get totals from localStorage
-    let itemsTotal = parseInt(localStorage.getItem("cartTotal")) || 0;
-    let deliveryFee = 0;
+  // Initialize totals
+  let itemsTotal = parseInt(localStorage.getItem("cartTotal")) || 0;
+  let deliveryFee = 0;
 
-    const itemsTotalEl = document.getElementById("itemsTotal");
-    const deliveryFeeEl = document.getElementById("deliveryFee");
-    const grandTotalEl = document.getElementById("grandTotal");
+  const itemsTotalEl = document.getElementById("itemsTotal");
+  const deliveryFeeEl = document.getElementById("deliveryFee");
+  const grandTotalEl = document.getElementById("grandTotal");
 
-    // Delivery options by city
-    const deliveryOptions = {
-      nairobi: [
-        { text: "Door Delivery (KES 350)", fee: 350 },
-        { text: "Pickup Station (KES 100)", fee: 100 }
-      ],
-      mombasa: [
-        { text: "Door Delivery (KES 500)", fee: 500 },
-        { text: "Pickup Station (KES 150)", fee: 150 }
-      ]
-    };
+  function updateTotals() {
+    const grand = itemsTotal + deliveryFee;
+    itemsTotalEl.textContent = itemsTotal;
+    deliveryFeeEl.textContent = deliveryFee;
+    grandTotalEl.textContent = grand;
+  }
 
-    const deliverySelect = document.getElementById("deliveryOption");
-    document.getElementById("city").addEventListener("change", function() {
-      deliverySelect.innerHTML = '<option value="">-- Select Delivery Option --</option>';
-      const city = this.value;
-      const options = deliveryOptions[city] || [
-        { text: "Door Delivery (KES 300)", fee: 300 },
-        { text: "Pickup Station (KES 100)", fee: 100 }
-      ];
-      options.forEach(opt => {
-        const option = document.createElement("option");
-        option.value = opt.fee;
-        option.textContent = opt.text;
-        deliverySelect.appendChild(option);
-      });
+  updateTotals();
+
+  // Delivery options by city
+  const deliveryOptions = {
+    nairobi: [{ text: "Door Delivery (KES 350)", fee: 350 }, { text: "Pickup Station (KES 100)", fee: 100 }],
+    mombasa: [{ text: "Door Delivery (KES 500)", fee: 500 }, { text: "Pickup Station (KES 150)", fee: 150 }]
+  };
+
+  const deliverySelect = document.getElementById("deliveryOption");
+  document.getElementById("city").addEventListener("change", function() {
+    deliverySelect.innerHTML = '<option value="">-- Select Delivery Option --</option>';
+    const city = this.value;
+    const options = deliveryOptions[city] || [
+      { text: "Door Delivery (KES 300)", fee: 300 },
+      { text: "Pickup Station (KES 100)", fee: 100 }
+    ];
+    options.forEach(opt => {
+      const option = document.createElement("option");
+      option.value = opt.fee;
+      option.textContent = opt.text;
+      deliverySelect.appendChild(option);
     });
+  });
 
-    deliverySelect.addEventListener("change", function() {
-      deliveryFee = parseInt(this.value) || 0;
-      updateTotals();
+  deliverySelect.addEventListener("change", function() {
+    deliveryFee = parseInt(this.value) || 0;
+    updateTotals();
+  });
+
+  // Accordion logic
+  document.querySelectorAll(".accordion-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const details = btn.closest(".payment-option").querySelector(".payment-details");
+      const isOpen = details.style.display === "block";
+      document.querySelectorAll(".payment-details").forEach(d => d.style.display = "none");
+      if (!isOpen) details.style.display = "block";
     });
+  });
 
-    function updateTotals() {
-      const grand = itemsTotal + deliveryFee;
-      itemsTotalEl.textContent = itemsTotal;
-      deliveryFeeEl.textContent = deliveryFee;
-      grandTotalEl.textContent = grand;
+  // ------------------ Place Order ------------------
+  const placeOrderBtn = document.getElementById("placeOrderBtn");
+  placeOrderBtn.addEventListener("click", async (e) => {
+    e.preventDefault(); // prevent default form submit
+
+    // Customer info
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const phone = document.getElementById("phone").value.trim();
+    const city = document.getElementById("city").value;
+    const deliveryOptionText = document.getElementById("deliveryOption").selectedOptions[0]?.text || "";
+
+    if (!name || !email || !phone || !city || !deliveryOptionText) {
+      alert("Please fill in all required fields.");
+      return;
     }
 
-    // Init totals
-    updateTotals();
+    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    if (cartItems.length === 0) {
+      alert("Your cart is empty.");
+      return;
+    }
 
-    // Accordion logic
-    document.querySelectorAll(".accordion-btn").forEach(btn => {
-      btn.addEventListener("click", () => {
-        const details = btn.closest(".payment-option").querySelector(".payment-details");
-        const isOpen = details.style.display === "block";
-        document.querySelectorAll(".payment-details").forEach(d => d.style.display = "none");
-        if (!isOpen) details.style.display = "block";
+    const totalAmount = parseInt(localStorage.getItem("cartTotal")) || 0;
+    const grandTotal = totalAmount + deliveryFee;
+
+    const orderData = {
+      customerName: name,
+      customerEmail: email,
+      customerPhone: phone,
+      city,
+      deliveryOption: deliveryOptionText,
+      products: cartItems,
+      totalAmount: grandTotal,
+      status: "confirmed"
+    };
+
+    try {
+      const res = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData)
       });
-    });
-  </script>
+
+      if (!res.ok) throw new Error("Failed to place order");
+
+      // Clear cart and update cart count
+      localStorage.removeItem("cart");
+      localStorage.removeItem("cartTotal");
+
+      const cartCountEl = document.getElementById("cartCount");
+      if (cartCountEl) cartCountEl.textContent = 0;
+
+      alert("✅ Order placed successfully!");
+      window.location.href = "/index.html"; // redirect after clearing cart
+
+    } catch (err) {
+      console.error(err);
+      alert("❌ Failed to place order. Please try again.");
+    }
+  });
+</script>
+
 </body>
 </html>

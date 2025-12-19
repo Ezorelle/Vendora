@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Orders</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background: #f7f7f7;
+    }
+    h1 {
+      text-align: center;
+    }
+    .order-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+    .order-card h3 {
+      margin: 0 0 10px 0;
+    }
+    .order-card ul {
+      padding-left: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Confirmed Orders</h1>
+  <div id="ordersContainer">
+    <p>Loading orders...</p>
+  </div>
+
+  <script>
+    async function fetchOrders() {
+      try {
+        const res = await fetch("/api/orders");
+        const orders = await res.json();
+
+        const container = document.getElementById("ordersContainer");
+        container.innerHTML = "";
+
+        // Filter confirmed orders only
+        const confirmedOrders = orders.filter(o => o.status === "confirmed");
+
+        if (confirmedOrders.length === 0) {
+          container.innerHTML = "<p>No confirmed orders yet.</p>";
+          return;
+        }
+
+        confirmedOrders.forEach(order => {
+          const orderDiv = document.createElement("div");
+          orderDiv.classList.add("order-card");
+
+          // If order has products array
+          const productsHTML = order.products ? order.products.map(p =>
+            `<li>${p.name} x${p.quantity} - $${p.price}</li>`
+          ).join("") : "<li>No products listed</li>";
+
+          orderDiv.innerHTML = `
+            <h3>Order ID: ${order.id}</h3>
+            <p>Total: $${order.totalAmount || "N/A"}</p>
+            <ul>${productsHTML}</ul>
+            <p>Status: ${order.status}</p>
+            <p>Ordered on: ${new Date(order.createdAt).toLocaleString()}</p>
+          `;
+
+          container.appendChild(orderDiv);
+        });
+
+      } catch (err) {
+        console.error(err);
+        document.getElementById("ordersContainer").innerHTML = "<p>Failed to load orders.</p>";
+      }
+    }
+
+    fetchOrders();
+  </script>
+</body>
+</html>
