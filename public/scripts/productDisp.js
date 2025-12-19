@@ -2,114 +2,137 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const urlParams = new URLSearchParams(window.location.search);
     const productId = urlParams.get("id");
-    if (!productId) throw "No ID in URL";
+    if (!productId) {
+      throw new Error("No product ID in URL");
+    }
 
+    // Fetch products 
     const res = await fetch("/api/products");
-    if (!res.ok) throw "API dead";
+    if (!res.ok) throw new Error("Failed to load products");
+
     const products = await res.json();
 
+    // Find the specific product
     const product = products.find(p => p._id === productId);
-    if (!product) throw "Product not found";
+    if (!product) {
+      throw new Error("Product not found");
+    }
 
-    // MAIN PRODUCT INFO
-    document.getElementById("productName").textContent = product.name;
-    document.getElementById("productStock").textContent = product.stock;
-    document.getElementById("productPrice").textContent = Number(product.price).toLocaleString();
+    // === UPDATE PRODUCT INFO ===
+    document.getElementById("productName").textContent = product.name || "No name";
+    document.getElementById("productStock").textContent = product.stock || 0;
+    document.getElementById("productPrice").textContent = Number(product.price || 0).toLocaleString();
 
-    // IMAGE HANDLING 
+    // === IMAGE HANDLING ===
     let images = [];
-    if (product.image) {
-      if (Array.isArray(product.image)) {
-        images = product.image.filter(img => img && typeof img === 'string' && img.trim() !== '');
-      } else if (typeof product.image === 'string' && product.image.trim() !== '') {
-        images = [product.image];
+    if (product.images) {
+      if (Array.isArray(product.images)) {
+        images = product.images.filter(img => img && img.trim());
+      } else if (typeof product.images === "string" && product.images.trim()) {
+        images = [product.images];
       }
+    } else if (product.image) { // old products
+      images = Array.isArray(product.image) ? product.image.filter(img => img && img.trim()) : [product.image];
     }
 
-    //at least one image (placeholder)
     if (images.length === 0) {
-      images = ["https://via.placeholder.com/600?text=No+Image"];
+      images = ["/images/placeholder.jpg"];
     }
-
-    console.log("Images we're trying to use (cleaned):", images);
 
     const mainImg = document.getElementById("mainImage");
-    mainImg.src = images[0];
     let currentIndex = 0;
 
-    // THUMBNAILS
-    const thumbContainer = document.getElementById("thumbnailContainer");
-    thumbContainer.innerHTML = "";
-    images.forEach((src, i) => {
-      const img = document.createElement("img");
-      img.src = src;
-      img.alt = product.name;
-      if (i === 0) img.classList.add("active-thumb");
-      img.onclick = () => {
-        currentIndex = i;
-        mainImg.src = src;
-        updateThumbs(i);
-      };
-      thumbContainer.appendChild(img);
-    });
-
-    document.getElementById("prevBtn").onclick = () => {
-      currentIndex = (currentIndex - 1 + images.length) % images.length;
+    const updateImage = () => {
       mainImg.src = images[currentIndex];
-      updateThumbs(currentIndex);
+      mainImg.alt = product.name;
+
+      // Show/hide arrows
+      const display = images.length > 1 ? "block" : "none";
+      document.getElementById("prevBtn").style.display = display;
+      document.getElementById("nextBtn").style.display = display;
+    };
+
+    updateImage();
+
+    // Arrow clicks
+    document.getElementById("prevBtn").onclick = () => {
+      if (images.length > 1) {
+        currentIndex = (currentIndex - 1 + images.length) % images.length;
+        updateImage();
+      }
     };
 
     document.getElementById("nextBtn").onclick = () => {
-      currentIndex = (currentIndex + 1) % images.length;
-      mainImg.src = images[currentIndex];
-      updateThumbs(currentIndex);
+      if (images.length > 1) {
+        currentIndex = (currentIndex + 1) % images.length;
+        updateImage();
+      }
     };
 
-    function updateThumbs(activeIndex) {
-      document.querySelectorAll("#thumbnailContainer img").forEach((t, idx) => {
-        t.classList.toggle("active-thumb", idx === activeIndex);
-      });
-    }
-
-    // AUTO SLIDESHOW
-    let slideshowInterval;
+    // Auto slideshow
     if (images.length > 1) {
-      slideshowInterval = setInterval(() => {
+      let interval = setInterval(() => {
         currentIndex = (currentIndex + 1) % images.length;
-        mainImg.src = images[currentIndex];
-        updateThumbs(currentIndex);
+        updateImage();
       }, 4000);
 
       const gallery = document.querySelector(".image-gallery");
-      gallery.addEventListener("mouseenter", () => clearInterval(slideshowInterval));
+      gallery.addEventListener("mouseenter", () => clearInterval(interval));
       gallery.addEventListener("mouseleave", () => {
-        slideshowInterval = setInterval(() => {
+        interval = setInterval(() => {
           currentIndex = (currentIndex + 1) % images.length;
-          mainImg.src = images[currentIndex];
-          updateThumbs(currentIndex);
+          updateImage();
         }, 4000);
       });
     }
 
-    // RELATED PRODUCTS - NOW SAFE TOO
+    // Hide thumbnails
+    const thumbContainer = document.getElementById("thumbnailContainer");
+    if (thumbContainer) thumbContainer.style.display = "none";
+
+    // === ADD TO CART BUTTON ===
+    document.getElementById("addToCartBtn").addEventListener("click", () => {
+      const cart = JSON.parse(localStorage.getItem("cart") || "[]");
+      const item = {
+        id: product._id,
+        name: product.name,
+        price: product.price,
+        qty: 1,
+        img: images[0],
+        total: product.price
+      };
+
+      const existing = cart.find(i => i.id === item.id);
+      if (existing) {
+        existing.qty += 1;
+        existing.total = existing.qty * existing.price;
+      } else {
+        cart.push(item);
+      }
+
+      localStorage.setItem("cart", JSON.stringify(cart));
+      updateCartCount?.(); // if you have this function globally
+      alert(`${product.name} added to cart! 🛒`);
+    });
+
+    // === RELATED PRODUCTS ===
     const relatedContainer = document.getElementById("relatedProducts");
     relatedContainer.innerHTML = "";
+
     const related = products
       .filter(p => p.category === product.category && p._id !== product._id)
       .slice(0, 8);
 
     related.forEach(p => {
-      // Reuse the same safe image logic
-      let relatedImg = "https://via.placeholder.com/150?text=No+Image";
-      if (p.image) {
-        if (Array.isArray(p.image) && p.image[0]) relatedImg = p.image[0];
-        else if (typeof p.image === 'string' && p.image.trim()) relatedImg = p.image;
-      }
+      let imgSrc = "/images/placeholder.jpg";
+      if (p.images && Array.isArray(p.images) && p.images[0]) imgSrc = p.images[0];
+      else if (p.images && typeof p.images === "string") imgSrc = p.images;
+      else if (p.image) imgSrc = Array.isArray(p.image) ? p.image[0] : p.image;
 
       const card = document.createElement("div");
       card.className = "card";
       card.innerHTML = `
-        <img src="${relatedImg}" alt="${p.name}">
+        <img src="${imgSrc}" alt="${p.name}">
         <div class="info">
           <h3>${p.name}</h3>
           <div class="price">KSh ${Number(p.price).toLocaleString()}</div>
@@ -120,6 +143,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
 
   } catch (err) {
-    console.error("Greg says: fix your life", err);
+    console.error("Load error:", err);
+    document.querySelector(".product-container")?.insertAdjacentHTML(
+      "afterbegin",
+      '<h1 style="color: white; text-align: center; grid-column: 1/-1; padding: 100px;">Product not found 😩</h1>'
+    );
   }
 });

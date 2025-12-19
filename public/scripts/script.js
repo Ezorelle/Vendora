@@ -91,6 +91,7 @@ if (sendChat && chatInput) {
         "Jones 1.0 is here to help!",
         "Consider it done.",
         "Looking sharp today, by the way ;)"
+         "Now a nigga signed to Hov took a power trip ;)"
       ];
       const botP = document.createElement("p");
       botP.innerHTML = `<strong>Jones 1.0:</strong> ${responses[Math.floor(Math.random() * responses.length)]}`;
