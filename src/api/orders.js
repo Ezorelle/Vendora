@@ -1,6 +1,6 @@
 ﻿const express = require("express");
 const router = express.Router();
-const Order = require("../models/Order"); // import your Order model
+const Order = require('../../models/Ordersmodel');
 
 // GET /api/orders - get all orders
 router.get("/", async (req, res) => {
@@ -13,18 +13,18 @@ router.get("/", async (req, res) => {
 });
 
 // POST /api/orders - create a new order
-router.post("/", async (req, res) => {
-  try {
-    const order = new Order({
-      status: "pending",
-      ...req.body,
-    });
-    await order.save();
-    res.status(201).json(order);
-  } catch (err) {
-    res.status(500).json({ error: "Server error" });
-  }
+router.post("/", (req, res) => {
+  const o = { id: Date.now().toString(), status: "confirmed", createdAt: new Date().toISOString(), ...req.body };
+  Order.create(o);
+
+  // Emit event to all connected sellers
+  const io = req.app.get("io");
+  io.emit("new-order", o);
+
+  res.status(201).json(o);
 });
+
+
 
 // PATCH /api/orders/:id/status - update order status
 router.patch("/:id/status", async (req, res) => {

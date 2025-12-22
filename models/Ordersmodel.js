@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const orderSchema = new mongoose.Schema({
   customerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-  sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // optional if multiple sellers
+  sellerId: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, 
   products: [
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
@@ -12,7 +12,7 @@ const orderSchema = new mongoose.Schema({
     },
   ],
   totalAmount: Number,
-  status: { type: String, default: "confirmed" }, // confirmed by default on checkout
+  status: { type: String, default: "confirmed" }, 
   createdAt: { type: Date, default: Date.now },
 });
 

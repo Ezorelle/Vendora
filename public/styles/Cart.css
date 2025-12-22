@@ -1,6 +1,6 @@
 
 body {
-  background-color: #3c0069; /* deep purple */
+  background-color: #3c0069; 
   margin: 0;
   font-family: Arial, sans-serif;
   color: white; 
@@ -13,7 +13,7 @@ body {
   margin-bottom: 15px;
   border-radius: 12px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  color: #111; /* make text readable */
+  color: #111; 
 }
 
 .cart-item-page img {
@@ -100,6 +100,27 @@ body {
 }
 
 .navbar .nav-links li a.active {
-  color: #ffcc00; /* highlight current page */
+  color: #ffcc00; 
   font-weight: bold;
+}
+
+.checkout-btn {
+  background-color: #6a1b9a;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: bold;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(106, 27, 154, 0.4);
+  transition: all 0.3s ease;
+  margin: 20px auto;
+  display: block;
+}
+
+.checkout-btn:hover {
+  background-color: #4a148c;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(106, 27, 154, 0.6);
 }

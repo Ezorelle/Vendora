@@ -82,21 +82,39 @@ document.addEventListener("DOMContentLoaded", () => {
     updateCartCount();
   }
 
-  // ----------------------
-  // CHECKOUT BUTTON
-  // ----------------------
-  if (checkoutBtnPage) {
-    checkoutBtnPage.addEventListener("click", () => {
-      const cart = getCart();
-      if (cart.length === 0) {
-        alert("Your cart is empty!");
-        return;
-      }
-      const total = cart.reduce((sum, item) => sum + item.total, 0);
-      localStorage.setItem("cartTotal", total.toFixed(2));
+// CHECKOUT BUTTON 
+
+const checkoutBtn = document.getElementById("checkout-btn"); 
+
+if (checkoutBtn) {
+  checkoutBtn.addEventListener("click", () => {
+    const cart = getCart();
+
+    if (cart.length === 0) {
+      alert("🛒 Your cart is empty! Add some items before checking out.");
+      return;
+    }
+
+    const total = cart.reduce((sum, item) => sum + item.total, 0).toFixed(2);
+
+    localStorage.setItem("checkoutCart", JSON.stringify(cart));
+    localStorage.setItem("cartTotal", total);
+
+    checkoutBtn.disabled = true;
+    const originalText = checkoutBtn.textContent;
+    checkoutBtn.textContent = "Processing...";
+
+    setTimeout(() => {
+      
       window.location.href = "Checkout.html";
-    });
-  }
+    }, 800);
+
+    setTimeout(() => {
+      checkoutBtn.disabled = false;
+      checkoutBtn.textContent = originalText;
+    }, 2000);
+  });
+}
 
   // ----------------------
   // INITIALIZE

@@ -7,12 +7,14 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 const fs = require("fs");
-
+const http = require("http");             
+const { Server } = require("socket.io");
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
 
-// ----------------------------
 // 📂 MULTER CONFIGURATION
-// ----------------------------
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = path.join(__dirname, "uploads");
@@ -30,34 +32,31 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-// ----------------------------
 // 📦 ENV VARIABLES
-// ----------------------------
+
 const PORT = process.env.PORT || 3000;
 const MONGO_URI = process.env.MONGO_URI;
 const SESSION_SECRET = process.env.SESSION_SECRET || "fallback_secret_key";
 
-// ----------------------------
 // 🗄️ MODELS
-// ----------------------------
+
 const User = require("./models/Usermodel");
 const Seller = require("./models/Sellermodel");
 const Product = require("./models/Productmodel");
-const orderRoutes = require("./routes/orders");
+const orderRoutes = require("./models/Ordersmodel");
 app.use("/orders", orderRoutes);
 
-// ----------------------------
 // 🧩 ROUTERS
-// ----------------------------
+
 const productsRouter = require("./src/api/products");
 const ordersRouter = require("./src/api/orders");
 const paymentsRouter = require("./src/api/payments");
 const invoicesRouter = require("./src/api/invoices");
 const webhooksRouter = require("./src/api/webhooks");
 
-// ----------------------------
+
 // ⚙️ DATABASE CONNECTION
-// ----------------------------
+
 mongoose
   .connect(MONGO_URI, {
     useNewUrlParser: true,
@@ -66,11 +65,10 @@ mongoose
   .then(() => console.log("✅ Connected to MongoDB"))
   .catch((err) => console.error("❌ MongoDB connection error:", err));
 
-// ----------------------------
 // 🔧 MIDDLEWARE
-// ----------------------------
-app.use(express.json()); // Parse JSON bodies (safe with Multer)
 
+app.use(express.json()); 
+app.set("io", io);
 app.use(
   session({
     secret: SESSION_SECRET,
@@ -84,9 +82,9 @@ app.use(
 app.use(express.static(path.join(__dirname, "public")));
 app.use("/uploads", express.static(path.join(__dirname, "uploads"))); // ← Important for images!
 
-// ----------------------------
+
 // 🚀 LOADSCREEN
-// ----------------------------
+
 app.get("/", (req, res) => {
   if (!req.session.visitedLoadscreen) {
     req.session.visitedLoadscreen = true;
@@ -95,9 +93,9 @@ app.get("/", (req, res) => {
   res.redirect("/index.html");
 });
 
-// ----------------------------
+
 // 🔒 PASSWORD VALIDATION
-// ----------------------------
+
 const validatePassword = (password) => {
   if (password.length < 8) return "Password must be at least 8 characters long";
   if (!/[a-zA-Z]/.test(password)) return "Password must contain at least one letter";
@@ -105,9 +103,9 @@ const validatePassword = (password) => {
   return null;
 };
 
-// ----------------------------
+
 // 👤 USER REGISTRATION
-// ----------------------------
+
 app.post("/register", async (req, res) => {
   try {
     const { fullname, username, email, password, confirm_password } = req.body;
@@ -146,9 +144,9 @@ app.post("/register", async (req, res) => {
   }
 });
 
-// ----------------------------
+
 // 🏪 SELLER REGISTRATION
-// ----------------------------
+
 app.post("/seller/register", async (req, res) => {
   try {
     const { fullname, shopname, email, password, confirm_password } = req.body;
@@ -187,9 +185,9 @@ app.post("/seller/register", async (req, res) => {
   }
 });
 
-// ----------------------------
+
 // 🔑 LOGIN (user & seller)
-// ----------------------------
+
 app.post("/api/auth/login", async (req, res) => {
   try {
     const { username, password, role } = req.body;
@@ -230,9 +228,9 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
-// ----------------------------
+
 // 📦 FETCH SESSION USER
-// ----------------------------
+
 app.get("/api/user", (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ message: "Not logged in" });
@@ -240,9 +238,9 @@ app.get("/api/user", (req, res) => {
   res.json(req.session.user);
 });
 
-// ----------------------------
+
 // 🚪 LOGOUT
-// ----------------------------
+
 app.post("/api/auth/logout", (req, res) => {
   if (!req.session.user) {
     return res.status(400).json({ message: "No active session" });
@@ -258,20 +256,20 @@ app.post("/api/auth/logout", (req, res) => {
   });
 });
 
-// ----------------------------
+
 // 🧩 API ROUTES
-// ----------------------------
+
 app.use("/api/products", productsRouter);
 app.use("/api/orders", ordersRouter);
 app.use("/api/payments", paymentsRouter);
 app.use("/api/invoices", invoicesRouter);
 app.use("/api/webhook", webhooksRouter);
 
-// ----------------------------
+
 // 🚀 START SERVER
-// ----------------------------
+
 app.listen(PORT, () => {
   console.log(`🚀 Vendora running at http://localhost:${PORT}`);
 });
 
-module.exports.upload = upload;  // Or module.exports = { app, upload };
+module.exports.upload = upload;  
