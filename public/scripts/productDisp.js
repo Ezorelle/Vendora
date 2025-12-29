@@ -12,16 +12,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     const products = await res.json();
 
-    // Find the specific product
-    const product = products.find(p => p._id === productId);
-    if (!product) {
-      throw new Error("Product not found");
-    }
+  // Find the specific product
+   const product = products.find(p => p._id.toString() === productId);
+   if (!product) {
+  throw new Error("Product not found");
+}
 
     // === UPDATE PRODUCT INFO ===
     document.getElementById("productName").textContent = product.name || "No name";
     document.getElementById("productStock").textContent = product.stock || 0;
     document.getElementById("productPrice").textContent = Number(product.price || 0).toLocaleString();
+   console.log("Product fetched:", product);
+console.log("Keys:", Object.keys(product)); 
+    document.getElementById("productDescription").textContent = product.description || "No description available.";
+
 
     // === IMAGE HANDLING ===
     let images = [];
@@ -111,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       localStorage.setItem("cart", JSON.stringify(cart));
-      updateCartCount?.(); // if you have this function globally
+      updateCartCount?.(); 
       alert(`${product.name} added to cart! 🛒`);
     });
 
@@ -150,3 +154,4 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 });
+

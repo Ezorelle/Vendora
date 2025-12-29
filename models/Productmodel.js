@@ -12,34 +12,38 @@ const productSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    price: {
-      type: Number,
-      required: true,
-    },
+   price: {
+  type: Number,
+  required: true,
+  min: 0,
+},
     stock: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
+  type: Number,
+  required: true,
+  min: 0,
+},
     category: {
       type: String,
       required: true,
       trim: true,
     },
     images: {
-      type: [String],  // Array of image paths
+      type: [String],  
       required: true,
       validate: {
         validator: function(arr) {
-          return arr.length >= 1;  // At least one image
-        },
+          return arr.length >= 1;  
         message: "At least one product image is required",
       },
     },
-    description: {
-      type: String,
-      default: "",
-    },
+  description: {
+  type: String,
+  required: true,
+  trim: true,
+  maxlength: 1000,
+}
+
+
   },
   {
     timestamps: true,

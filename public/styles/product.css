@@ -159,6 +159,24 @@ body {
   margin: 12px 0;
 }
 
+.product-description {
+  color: #fff; /* or any visible color on your background */
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-top: 8px;
+}
+
+.product-description h3 {
+  color: #bb86fc;
+  font-size: 1.2rem;
+  margin-bottom: 6px;
+}
+
+.product-description p {
+  color: #fff; /* ensures the description text is visible */
+}
+
+
 .add-to-cart {
   background: linear-gradient(90deg, #bb86fc, #985eff); /* Purple theme */
   color: white;

@@ -39,8 +39,8 @@ router.post("/add", upload.array("images", 5), async (req, res) => {
   try {
     const { name, price, stock, category, description } = req.body;
 
-    if (!name || !price || !stock || !category)
-      return res.status(400).json({ message: "All fields are required" });
+    if (!name || !price || !stock || !category || !description)
+  return res.status(400).json({ message: "All fields are required" });
 
     if (!req.files || req.files.length === 0)
       return res.status(400).json({ message: "At least one image is required" });
@@ -70,9 +70,8 @@ router.post("/add", upload.array("images", 5), async (req, res) => {
   }
 });
 
-// ----------------------------
+
 // 📦 GET ALL PRODUCTS
-// ----------------------------
 router.get("/", async (req, res) => {
   try {
     const products = await Product.find().sort({ createdAt: -1 });
@@ -82,10 +81,10 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Error loading products" });
   }
 });
+ ,
 
-// ----------------------------
-// ❌ DELETE PRODUCT (with image cleanup)
-// ----------------------------
+// ❌ DELETE PRODUCT 
+
 router.delete("/:id", async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
